@@ -7,6 +7,7 @@ import {
   Gauge,
   Lock,
   Play,
+  Trash2,
   Upload,
 } from 'lucide-react'
 import './App.css'
@@ -53,7 +54,7 @@ type AnalysisResult = {
 function App() {
   const [documents, setDocuments] = useState<DocumentInput[]>([])
   const [question, setQuestion] = useState(
-    'Summarize the files, identify risks, extract missing information, and create an action list.',
+    'Review the uploaded confidential vendor contract. Summarize core obligations, identify legal and security risks, extract missing clauses or missing information, and create an action list.',
   )
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [status, setStatus] = useState('Ready for local analysis.')
@@ -89,8 +90,24 @@ function App() {
       extracted.push(await response.json())
     }
 
-    setDocuments((current) => [...current, ...extracted])
-    setStatus(`${extracted.length} file(s) staged for private review.`)
+    setDocuments(extracted)
+    setResult(null)
+    setStatus(
+      `${extracted.length} file(s) staged for private review. Previous workspace cleared.`,
+    )
+  }
+
+  function removeDocument(id: string) {
+    setDocuments((current) => current.filter((document) => document.id !== id))
+    setResult(null)
+    setStatus('Document removed from the local review workspace.')
+  }
+
+  function clearWorkspace() {
+    setDocuments([])
+    setResult(null)
+    setError('')
+    setStatus('Workspace cleared. Upload the next document set to review.')
   }
 
   async function analyze() {
@@ -158,6 +175,15 @@ function App() {
             <Upload size={18} />
             <h2>Files</h2>
           </div>
+          <button
+            type="button"
+            className="ghost-button"
+            onClick={clearWorkspace}
+            disabled={!documents.length || isAnalyzing}
+          >
+            <Trash2 size={16} />
+            Clear workspace
+          </button>
           <label className="dropzone">
             <input
               type="file"
@@ -177,6 +203,15 @@ function App() {
                   <strong>{document.name}</strong>
                   <span>{document.text.length.toLocaleString()} chars</span>
                 </div>
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label={`Remove ${document.name}`}
+                  onClick={() => removeDocument(document.id)}
+                  disabled={isAnalyzing}
+                >
+                  <Trash2 size={15} />
+                </button>
               </article>
             ))}
           </div>

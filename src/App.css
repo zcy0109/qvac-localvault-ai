@@ -186,6 +186,28 @@ button {
   padding: 11px 14px;
 }
 
+.ghost-button {
+  background: #f8faf9;
+  border: 1px solid #dfe3e1;
+  color: #25312d;
+  font-size: 13px;
+  margin: 0 0 12px;
+  padding: 8px 10px;
+}
+
+.icon-button {
+  align-self: center;
+  background: transparent;
+  color: #65717d;
+  margin: 0 0 0 auto;
+  padding: 6px;
+}
+
+.icon-button:hover,
+.ghost-button:hover {
+  background: #eef3f0;
+}
+
 button:disabled {
   cursor: progress;
   opacity: 0.7;

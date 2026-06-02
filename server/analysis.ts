@@ -65,6 +65,8 @@ answer: string
 risks: string[]
 actionItems: string[]
 
+For contract review, explicitly check for missing or weak clauses such as breach notification deadline, audit rights, force majeure liability, intellectual property ownership, subcontractor controls, security reporting, data deletion, and liability limits. If the local context says a provision is missing, surface it as a risk and an action item.
+
 User question:
 ${question}
 
