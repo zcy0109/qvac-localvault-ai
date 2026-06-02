@@ -25,7 +25,7 @@ export async function analyzeDocuments(input: {
     selectedChunks,
   })
 
-  const parsed = parseStructuredCompletion(completion.text)
+  const parsed = parseStructuredCompletion(stripThinking(completion.text))
   const citations = selectedChunks.slice(0, 4).map((chunk) => ({
     chunkId: chunk.id,
     documentName: chunk.documentName,
@@ -57,7 +57,7 @@ function buildPrompt(question: string, chunks: ReturnType<typeof retrieveChunks>
 
   return `You are LocalVault AI, a local-first confidential document intelligence agent running on consumer hardware.
 
-Use only the local context below. Do not invent facts. Return strict JSON with these keys:
+Use only the local context below. Do not invent facts. Do not reveal hidden reasoning or thinking tags. Return strict JSON with these keys:
 summary: string
 answer: string
 risks: string[]
@@ -71,7 +71,8 @@ ${context}`
 }
 
 function parseStructuredCompletion(text: string) {
-  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  const cleanText = stripCodeFence(text)
+  const jsonMatch = cleanText.match(/\{[\s\S]*\}/)
   if (jsonMatch) {
     try {
       const parsed = JSON.parse(jsonMatch[0])
@@ -88,12 +89,53 @@ function parseStructuredCompletion(text: string) {
     }
   }
 
+  const looseSummary = extractLooseString(cleanText, 'summary')
+  const looseAnswer = extractLooseString(cleanText, 'answer')
+  const looseRisks = extractLooseList(cleanText, 'risks')
+  const looseActionItems = extractLooseList(cleanText, 'actionItems')
+
   return {
-    summary: text.slice(0, 600),
-    answer: text,
-    risks: ['Review the cited chunks manually before making a decision.'],
-    actionItems: ['Run a final QVAC-backed analysis before submission.'],
+    summary: looseSummary || cleanText.slice(0, 600),
+    answer: looseAnswer || cleanText,
+    risks: looseRisks.length
+      ? looseRisks
+      : ['Review the cited chunks manually before making a decision.'],
+    actionItems: looseActionItems.length
+      ? looseActionItems
+      : ['Run a final QVAC-backed analysis before submission.'],
   }
+}
+
+function stripCodeFence(text: string) {
+  return text
+    .replace(/^```(?:json|JSON)?\s*/u, '')
+    .replace(/\s*```\s*$/u, '')
+    .trim()
+}
+
+function stripThinking(text: string) {
+  return text
+    .replace(/<think>[\s\S]*?<\/think>/gi, '')
+    .replace(/<思考>[\s\S]*?<\/思考>/g, '')
+    .replace(
+      /^\s*(?:思考|thinking)[:：][\s\S]*?(?=\n\s*(?:\{|summary|answer|risks|actionItems|摘要|回答|风险|行动))/i,
+      '',
+    )
+    .trim()
+}
+
+function extractLooseString(text: string, key: string) {
+  const match = text.match(new RegExp(`"${key}"\\s*:\\s*"([^"]+)`, 'u'))
+  return match?.[1]?.trim() ?? ''
+}
+
+function extractLooseList(text: string, key: string) {
+  const block = text.match(new RegExp(`"${key}"\\s*:\\s*\\[([\\s\\S]*?)(?:\\]|$)`, 'u'))
+  if (!block) return []
+
+  return Array.from(block[1].matchAll(/"([^"]+)"/gu))
+    .map((match) => match[1].trim())
+    .filter(Boolean)
 }
 
 async function persistEvidence(result: AnalysisResult) {

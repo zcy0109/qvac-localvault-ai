@@ -1,4 +1,4 @@
-import { performance } from 'node:perf_hooks'
+﻿import { performance } from 'node:perf_hooks'
 import crypto from 'node:crypto'
 import { getDeviceInfo } from './device.js'
 import type { InferenceLog, SourceChunk } from './types.js'
@@ -54,8 +54,8 @@ async function runQvacCompletion({
     const loadStarted = performance.now()
     qvacModelId = await qvac.loadModel({
       modelSrc,
-        modelType: 'llamacpp-completion',
-        modelConfig: { ctx_size: 4096 },
+      modelType: 'llamacpp-completion',
+      modelConfig: { ctx_size: 4096 },
       onProgress: (progress: unknown) => console.info('[QVAC]', progress),
     })
     qvacModelLoadMs = Math.round(performance.now() - loadStarted)
@@ -200,3 +200,4 @@ function makeLog(input: {
 function estimateTokens(text: string) {
   return Math.max(1, Math.ceil(text.length / 4))
 }
+
