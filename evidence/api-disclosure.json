@@ -1,0 +1,6 @@
+{
+  "project": "LocalVault AI",
+  "remote_api_calls": [],
+  "cloud_ai_apis": [],
+  "notes": "最终评审配置应通过 QVAC SDK 在本地完成 AI 推理和文档审查。开发 fallback provider 仅用于 UI 和证据链测试，不能作为最终评审证据。"
+}
