@@ -57,7 +57,9 @@ function buildPrompt(question: string, chunks: ReturnType<typeof retrieveChunks>
 
   return `You are LocalVault AI, a local-first confidential document intelligence agent running on consumer hardware.
 
-Use only the local context below. Do not invent facts. Do not reveal hidden reasoning or thinking tags. Return strict JSON with these keys:
+Use only the local context below. Do not invent facts. Do not reveal hidden reasoning or thinking tags. Do not wrap the response in markdown fences.
+
+Return strict JSON with these keys:
 summary: string
 answer: string
 risks: string[]
@@ -77,15 +79,20 @@ function parseStructuredCompletion(text: string) {
     try {
       const parsed = JSON.parse(jsonMatch[0])
       return {
-        summary: String(parsed.summary ?? ''),
-        answer: String(parsed.answer ?? ''),
-        risks: Array.isArray(parsed.risks) ? parsed.risks.map(String) : [],
+        summary: String(parsed.summary ?? '').trim(),
+        answer: String(parsed.answer ?? '').trim(),
+        risks: Array.isArray(parsed.risks)
+          ? parsed.risks.map(String).map((item) => item.trim()).filter(Boolean)
+          : [],
         actionItems: Array.isArray(parsed.actionItems)
-          ? parsed.actionItems.map(String)
+          ? parsed.actionItems
+              .map(String)
+              .map((item) => item.trim())
+              .filter(Boolean)
           : [],
       }
     } catch {
-      // Fall through to plain text handling.
+      // Fall through to tolerant extraction for truncated JSON.
     }
   }
 
@@ -108,32 +115,37 @@ function parseStructuredCompletion(text: string) {
 
 function stripCodeFence(text: string) {
   return text
-    .replace(/^```(?:json|JSON)?\s*/u, '')
+    .replace(/^\s*```(?:json|JSON)?\s*/u, '')
     .replace(/\s*```\s*$/u, '')
+    .replace(/```(?:json|JSON)?/gu, '')
     .trim()
 }
 
 function stripThinking(text: string) {
   return text
     .replace(/<think>[\s\S]*?<\/think>/gi, '')
-    .replace(/<思考>[\s\S]*?<\/思考>/g, '')
+    .replace(/<\u601d\u8003>[\s\S]*?<\/\u601d\u8003>/gu, '')
     .replace(
-      /^\s*(?:思考|thinking)[:：][\s\S]*?(?=\n\s*(?:\{|summary|answer|risks|actionItems|摘要|回答|风险|行动))/i,
+      /^\s*(?:\u601d\u8003|thinking)[:\uFF1A][\s\S]*?(?=\n\s*(?:\{|summary|answer|risks|actionItems|\u6458\u8981|\u56DE\u7B54|\u98CE\u9669|\u884C\u52A8))/iu,
       '',
     )
     .trim()
 }
 
 function extractLooseString(text: string, key: string) {
-  const match = text.match(new RegExp(`"${key}"\\s*:\\s*"([^"]+)`, 'u'))
+  const match = text.match(
+    new RegExp(`["']${key}["']\\s*:\\s*["']([^"']+)`, 'u'),
+  )
   return match?.[1]?.trim() ?? ''
 }
 
 function extractLooseList(text: string, key: string) {
-  const block = text.match(new RegExp(`"${key}"\\s*:\\s*\\[([\\s\\S]*?)(?:\\]|$)`, 'u'))
+  const block = text.match(
+    new RegExp(`["']${key}["']\\s*:\\s*\\[([\\s\\S]*?)(?:\\]|$)`, 'u'),
+  )
   if (!block) return []
 
-  return Array.from(block[1].matchAll(/"([^"]+)"/gu))
+  return Array.from(block[1].matchAll(/["']([^"']+)["']/gu))
     .map((match) => match[1].trim())
     .filter(Boolean)
 }
