@@ -58,7 +58,14 @@ import {
 "@qvac/sdk": "^0.10.2"
 ```
 
-第一次完整 QVAC smoke test 可能需要较长时间下载或初始化模型。因此开发阶段可以先使用 mock provider 跑通产品和证据链，但最终提交给 DoraHacks 的日志必须来自真实 QVAC provider。
+当前真实 QVAC 路径已经跑通：
+
+- 模型：`QWEN3_600M_INST_Q4`
+- 本地缓存目录：`C:\Users\张晨宇\.qvac\models`
+- 最新日志：`evidence/logs/latest-demo-run.json`
+- 最新日志状态：`provider: qvac`，`remote_api_calls: []`
+
+开发阶段仍可使用 mock provider 快速调 UI，但最终提交给 DoraHacks 的日志必须来自真实 QVAC provider。
 
 开发模式：
 

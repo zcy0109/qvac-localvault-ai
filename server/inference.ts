@@ -47,14 +47,15 @@ async function runQvacCompletion({
 }: CompletionInput): Promise<CompletionOutput> {
   const started = performance.now()
   const qvac = await import('@qvac/sdk')
-  const modelSrc = qvac.LLAMA_3_2_1B_INST_Q4_0
-  const model = 'LLAMA_3_2_1B_INST_Q4_0'
+  const modelSrc = qvac.QWEN3_600M_INST_Q4 ?? qvac.LLAMA_3_2_1B_INST_Q4_0
+  const model = modelSrc.name ?? 'QWEN3_600M_INST_Q4'
 
   if (!qvacModelId) {
     const loadStarted = performance.now()
     qvacModelId = await qvac.loadModel({
       modelSrc,
-      modelType: 'llm',
+        modelType: 'llamacpp-completion',
+        modelConfig: { ctx_size: 4096 },
       onProgress: (progress: unknown) => console.info('[QVAC]', progress),
     })
     qvacModelLoadMs = Math.round(performance.now() - loadStarted)
@@ -64,14 +65,25 @@ async function runQvacCompletion({
     modelId: qvacModelId,
     history: [{ role: 'user', content: prompt }],
     stream: true,
+    generationParams: {
+      temp: 0.2,
+      predict: 512,
+    },
   })
 
   let text = ''
   let firstTokenAt = 0
-  for await (const token of result.tokenStream) {
-    if (!firstTokenAt) firstTokenAt = performance.now()
-    text += token
+  for await (const event of result.events) {
+    if (event.type === 'contentDelta') {
+      if (!firstTokenAt) firstTokenAt = performance.now()
+      text += event.text
+    }
+    if (event.type === 'completionDone' && event.stopReason === 'error') {
+      throw new Error(event.error.message)
+    }
   }
+  const final = await result.final
+  text = final.contentText || final.raw.fullText || text
 
   const totalMs = Math.round(performance.now() - started)
   const outputTokens = estimateTokens(text)
