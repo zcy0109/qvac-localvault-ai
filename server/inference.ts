@@ -67,7 +67,7 @@ async function runQvacCompletion({
     stream: true,
     generationParams: {
       temp: 0.2,
-      predict: 512,
+      predict: 384,
     },
   })
 

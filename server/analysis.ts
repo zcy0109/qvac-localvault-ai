@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { reviewContractLocally } from './contract-review.js'
 import { chunkDocuments, retrieveChunks } from './rag.js'
 import { runCompletion } from './inference.js'
 import type { AnalysisResult, DocumentInput } from './types.js'
@@ -11,14 +12,15 @@ export async function analyzeDocuments(input: {
   const cleanDocuments = input.documents.filter((document) =>
     document.text.trim(),
   )
+  const contractSignals = reviewContractLocally(cleanDocuments)
   const chunks = chunkDocuments(cleanDocuments)
   const selectedChunks = retrieveChunks(
     chunks,
-    `${input.question} summary risks action items confidentiality obligations`,
+    `${input.question} summary risks action items confidentiality obligations missing clauses breach notification audit rights force majeure intellectual property security reports incident response SLA retention liquidated damages`,
     6,
   )
 
-  const prompt = buildPrompt(input.question, selectedChunks)
+  const prompt = buildPrompt(input.question, selectedChunks, contractSignals)
   const completion = await runCompletion({
     prompt,
     purpose: 'confidential-document-review',
@@ -26,17 +28,18 @@ export async function analyzeDocuments(input: {
   })
 
   const parsed = parseStructuredCompletion(stripThinking(completion.text))
-  const citations = selectedChunks.slice(0, 4).map((chunk) => ({
+  const merged = mergeContractSignals(parsed, contractSignals)
+  const citations = selectedChunks.slice(0, 6).map((chunk) => ({
     chunkId: chunk.id,
     documentName: chunk.documentName,
     quote: chunk.text.slice(0, 260),
   }))
 
   const result: AnalysisResult = {
-    summary: parsed.summary,
-    answer: parsed.answer,
-    risks: parsed.risks,
-    actionItems: parsed.actionItems,
+    summary: merged.summary,
+    answer: merged.answer,
+    risks: merged.risks,
+    actionItems: merged.actionItems,
     citations,
     chunks: selectedChunks,
     log: completion.log,
@@ -47,13 +50,38 @@ export async function analyzeDocuments(input: {
   return result
 }
 
-function buildPrompt(question: string, chunks: ReturnType<typeof retrieveChunks>) {
+function buildPrompt(
+  question: string,
+  chunks: ReturnType<typeof retrieveChunks>,
+  contractSignals: ReturnType<typeof reviewContractLocally>,
+) {
   const context = chunks
     .map(
       (chunk) =>
         `[${chunk.id}] ${chunk.documentName} / chunk ${chunk.index + 1}\n${chunk.text}`,
     )
     .join('\n\n---\n\n')
+  const deterministicSignals = [
+    contractSignals.brief,
+    contractSignals.keyMetrics.length
+      ? `Key metrics detected locally:\n${contractSignals.keyMetrics
+          .map(
+            (metric) =>
+              `- ${metric.label}: ${metric.value}. Evidence: ${metric.evidence}`,
+          )
+          .join('\n')}`
+      : '',
+    contractSignals.missingClauses.length
+      ? `Missing clauses detected locally:\n${contractSignals.missingClauses
+          .map(
+            (finding) =>
+              `- ${finding.title}. Evidence: ${finding.evidence}`,
+          )
+          .join('\n')}`
+      : '',
+  ]
+    .filter(Boolean)
+    .join('\n\n')
 
   return `You are LocalVault AI, a local-first confidential document intelligence agent running on consumer hardware.
 
@@ -65,10 +93,13 @@ answer: string
 risks: string[]
 actionItems: string[]
 
-For contract review, explicitly check for missing or weak clauses such as breach notification deadline, audit rights, force majeure liability, intellectual property ownership, subcontractor controls, security reporting, data deletion, and liability limits. If the local context says a provision is missing, surface it as a risk and an action item.
+For contract review, explicitly list concrete obligations, key numeric terms, missing clauses, legal/security risks, and required amendments. If deterministic local signals are provided, include them in the final JSON instead of replacing them with generic advice.
 
 User question:
 ${question}
+
+Deterministic local signals:
+${deterministicSignals || 'No deterministic contract signals detected.'}
 
 Local context:
 ${context}`
@@ -106,13 +137,75 @@ function parseStructuredCompletion(text: string) {
   return {
     summary: looseSummary || cleanText.slice(0, 600),
     answer: looseAnswer || cleanText,
-    risks: looseRisks.length
-      ? looseRisks
-      : ['Review the cited chunks manually before making a decision.'],
-    actionItems: looseActionItems.length
-      ? looseActionItems
-      : ['Run a final QVAC-backed analysis before submission.'],
+    risks: looseRisks,
+    actionItems: looseActionItems,
   }
+}
+
+function mergeContractSignals(
+  parsed: {
+    summary: string
+    answer: string
+    risks: string[]
+    actionItems: string[]
+  },
+  contractSignals: ReturnType<typeof reviewContractLocally>,
+) {
+  const modelRisks = parsed.risks.filter(isBusinessFinding)
+  const modelActions = parsed.actionItems.filter(isBusinessFinding)
+  const deterministicSummary = contractSignals.brief
+  const summary = deterministicSummary || parsed.summary
+  const answer = joinSections([
+    deterministicSummary ? `Local deterministic review: ${deterministicSummary}` : '',
+    parsed.answer,
+  ])
+  const risks = uniqueStrings([...contractSignals.risks, ...modelRisks])
+  const actionItems = uniqueStrings([
+    ...contractSignals.actionItems,
+    ...modelActions,
+  ])
+
+  return {
+    summary: summary || 'Local contract review completed.',
+    answer: answer || summary || 'Local contract review completed.',
+    risks: risks.length
+      ? risks
+      : ['No concrete contract risk was extracted from the selected local context.'],
+    actionItems: actionItems.length
+      ? actionItems
+      : ['Re-run the review with a larger or more specific local document set.'],
+  }
+}
+
+function joinSections(values: string[]) {
+  return uniqueStrings(values.map((value) => value.trim()).filter(Boolean)).join(
+    '\n\n',
+  )
+}
+
+function uniqueStrings(values: string[]) {
+  const seen = new Set<string>()
+  return values.filter((value) => {
+    const normalized = value.toLowerCase().replace(/\s+/gu, ' ').trim()
+    if (!normalized || seen.has(normalized)) return false
+    seen.add(normalized)
+    return true
+  })
+}
+
+function isBusinessFinding(value: string) {
+  const normalized = value.toLowerCase()
+  return ![
+    'qvac',
+    'submission',
+    'dorahacks',
+    'provider=qvac',
+    'final qvac',
+    'cited chunks manually',
+    'source citations',
+    'selected local chunks',
+    'remote calls',
+  ].some((phrase) => normalized.includes(phrase))
 }
 
 function stripCodeFence(text: string) {
