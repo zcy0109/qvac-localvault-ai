@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import {
   Activity,
   AlertTriangle,
@@ -208,15 +208,15 @@ function App() {
             <div className="output">
               <section>
                 <h3>Summary</h3>
-                <p>{result.summary}</p>
+                <p>{cleanDisplayText(result.summary, 'summary')}</p>
               </section>
               <section>
                 <h3>Answer</h3>
-                <p>{result.answer}</p>
+                <p>{cleanDisplayText(result.answer, 'answer')}</p>
               </section>
               <section className="two-column">
-                <ListBlock title="Risks" items={result.risks} />
-                <ListBlock title="Action Items" items={result.actionItems} />
+                <ListBlock title="Risks" items={cleanList(result.risks)} />
+                <ListBlock title="Action Items" items={cleanList(result.actionItems)} />
               </section>
             </div>
           )}
@@ -293,4 +293,38 @@ function ListBlock({ title, items }: { title: string; items: string[] }) {
   )
 }
 
+function cleanDisplayText(text: string, key?: string) {
+  const clean = text
+    .replace(/<think>[\s\S]*?<\/think>/gi, '')
+    .replace(/<鎬濊€?[\s\S]*?<\/鎬濊€?/g, '')
+    .replace(/^\s*```(?:json|JSON)?\s*/u, '')
+    .replace(/\s*```\s*$/u, '')
+    .replace(/```(?:json|JSON)?/gu, '')
+    .trim()
+
+  if (key) {
+    const extracted = extractJsonLikeField(clean, key)
+    if (extracted) return extracted
+  }
+
+  return clean
+}
+
+function cleanList(items: string[]) {
+  return items
+    .map((item) => cleanDisplayText(item))
+    .filter((item) => item && !item.includes('```json'))
+}
+
+function extractJsonLikeField(text: string, key: string) {
+  const quoted = text.match(
+    new RegExp(`["']${key}["']\\s*:\\s*["']([^"']+)`, 'u'),
+  )
+  if (quoted?.[1]) return quoted[1].trim()
+
+  const bare = text.match(new RegExp(`${key}\\s*[:锛歖\\s*([^\\n{]+)`, 'iu'))
+  return bare?.[1]?.trim() ?? ''
+}
+
 export default App
+
