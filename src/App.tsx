@@ -322,11 +322,21 @@ function Metric({
 }
 
 function ContractReviewPanel({ result }: { result: AnalysisResult }) {
-  const review = result.contractReview
-  const missingClauses = review.missingClauses
-  const keyMetrics = review.keyMetrics
-  const risks = cleanList(review.risks)
-  const actionItems = cleanList(review.actionItems)
+  const review = result.contractReview ?? {
+    keyMetrics: [],
+    missingClauses: [],
+    risks: result.risks,
+    actionItems: result.actionItems,
+    brief: result.summary,
+  }
+  const missingClauses = Array.isArray(review.missingClauses)
+    ? review.missingClauses
+    : []
+  const keyMetrics = Array.isArray(review.keyMetrics) ? review.keyMetrics : []
+  const risks = cleanList(Array.isArray(review.risks) ? review.risks : result.risks)
+  const actionItems = cleanList(
+    Array.isArray(review.actionItems) ? review.actionItems : result.actionItems,
+  )
 
   return (
     <div className="output review-output">
@@ -419,10 +429,11 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
   )
 }
 
-function cleanDisplayText(text: string, key?: string) {
-  const clean = text
+function cleanDisplayText(text: unknown, key?: string) {
+  const raw = typeof text === 'string' ? text : String(text ?? '')
+  const clean = raw
     .replace(/<think>[\s\S]*?<\/think>/gi, '')
-    .replace(/<鎬濊€?[\s\S]*?<\/鎬濊€?/g, '')
+    .replace(/<\u601d\u8003>[\s\S]*?<\/\u601d\u8003>/gu, '')
     .replace(/^\s*```(?:json|JSON)?\s*/u, '')
     .replace(/\s*```\s*$/u, '')
     .replace(/```(?:json|JSON)?/gu, '')
@@ -436,19 +447,22 @@ function cleanDisplayText(text: string, key?: string) {
   return clean
 }
 
-function cleanList(items: string[]) {
+function cleanList(items: unknown[]) {
   return items
     .map((item) => cleanDisplayText(item))
     .filter((item) => item && !item.includes('```json'))
 }
 
 function extractJsonLikeField(text: string, key: string) {
+  const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
   const quoted = text.match(
-    new RegExp(`["']${key}["']\\s*:\\s*["']([^"']+)`, 'u'),
+    new RegExp(`["']${escapedKey}["']\\s*:\\s*["']([^"']+)`, 'u'),
   )
   if (quoted?.[1]) return quoted[1].trim()
 
-  const bare = text.match(new RegExp(`${key}\\s*[:锛歖\\s*([^\\n{]+)`, 'iu'))
+  const bare = text.match(
+    new RegExp(`${escapedKey}\\s*[:\uFF1A]\\s*([^\\n{]+)`, 'iu'),
+  )
   return bare?.[1]?.trim() ?? ''
 }
 
