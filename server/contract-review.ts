@@ -1,21 +1,8 @@
-import type { DocumentInput } from './types.js'
-
-type Finding = {
-  title: string
-  evidence: string
-  risk: string
-  action: string
-}
-
-type Metric = {
-  label: string
-  value: string
-  evidence: string
-}
+import type { ContractFinding, ContractMetric, DocumentInput } from './types.js'
 
 export type ContractReviewSignals = {
-  missingClauses: Finding[]
-  keyMetrics: Metric[]
+  missingClauses: ContractFinding[]
+  keyMetrics: ContractMetric[]
   risks: string[]
   actionItems: string[]
   brief: string
@@ -109,7 +96,7 @@ export function reviewContractLocally(
 }
 
 function extractKeyMetrics(lines: string[]) {
-  const metrics: Metric[] = []
+  const metrics: ContractMetric[] = []
 
   for (const line of lines) {
     if (/^P[1-4]\b/i.test(line)) {
@@ -157,7 +144,7 @@ function extractKeyMetrics(lines: string[]) {
 }
 
 function addMetric(
-  metrics: Metric[],
+  metrics: ContractMetric[],
   label: string,
   lines: string[],
   pattern: RegExp,
@@ -211,7 +198,10 @@ function deriveMetricActions(metrics: Metric[]) {
   return actions
 }
 
-function buildBrief(missingClauses: Finding[], keyMetrics: Metric[]) {
+function buildBrief(
+  missingClauses: ContractFinding[],
+  keyMetrics: ContractMetric[],
+) {
   const parts: string[] = []
 
   if (keyMetrics.length) {
@@ -237,7 +227,7 @@ function findLine(lines: string[], pattern: RegExp) {
   return lines.find((line) => pattern.test(line)) ?? ''
 }
 
-function dedupeByEvidence(metrics: Metric[]) {
+function dedupeByEvidence(metrics: ContractMetric[]) {
   const seen = new Set<string>()
   return metrics.filter((metric) => {
     const key = `${metric.label}:${metric.evidence}`

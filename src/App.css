@@ -243,6 +243,127 @@ button:disabled {
   line-height: 1.55;
 }
 
+.review-output {
+  gap: 14px;
+}
+
+.review-hero {
+  align-items: flex-start;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) 120px;
+}
+
+.review-score {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.review-score span,
+.metric-card span,
+.severity {
+  color: #69717f;
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.review-score strong {
+  color: #c2410c;
+  display: block;
+  font-size: 32px;
+  line-height: 1;
+  margin-top: 6px;
+}
+
+.section-heading {
+  align-items: center;
+  display: flex;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.section-heading h3 {
+  margin-bottom: 0;
+}
+
+.metric-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.metric-card {
+  background: #ffffff;
+  border: 1px solid #e6e9e7;
+  border-radius: 8px;
+  padding: 11px;
+}
+
+.metric-card strong {
+  display: block;
+  font-size: 15px;
+  margin: 4px 0 8px;
+}
+
+.metric-card p {
+  font-size: 12px;
+}
+
+.finding-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.finding-card {
+  background: #ffffff;
+  border: 1px solid #e6e9e7;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.finding-card.high {
+  border-left: 4px solid #dc2626;
+}
+
+.finding-card.clean {
+  border-left: 4px solid #16a34a;
+}
+
+.finding-card h4 {
+  font-size: 14px;
+  margin: 3px 0 8px;
+}
+
+.finding-card p {
+  font-size: 13px;
+}
+
+.finding-card blockquote {
+  background: #f6f7f5;
+  border-left: 3px solid #9aa4b2;
+  color: #48515d;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+}
+
+.severity {
+  color: #b42318;
+  text-transform: uppercase;
+}
+
+.compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .two-column {
   display: grid;
   gap: 14px;
@@ -303,5 +424,12 @@ ul {
   .topbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .review-hero,
+  .metric-list,
+  .finding-list,
+  .two-column {
+    grid-template-columns: 1fr;
   }
 }

@@ -41,6 +41,11 @@ export async function analyzeDocuments(input: {
     risks: merged.risks,
     actionItems: merged.actionItems,
     citations,
+    contractReview: {
+      ...contractSignals,
+      risks: merged.risks,
+      actionItems: merged.actionItems,
+    },
     chunks: selectedChunks,
     log: completion.log,
   }

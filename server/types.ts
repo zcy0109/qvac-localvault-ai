@@ -32,6 +32,27 @@ export type InferenceLog = {
   remote_api_calls: string[]
 }
 
+export type ContractFinding = {
+  title: string
+  evidence: string
+  risk: string
+  action: string
+}
+
+export type ContractMetric = {
+  label: string
+  value: string
+  evidence: string
+}
+
+export type ContractReview = {
+  keyMetrics: ContractMetric[]
+  missingClauses: ContractFinding[]
+  risks: string[]
+  actionItems: string[]
+  brief: string
+}
+
 export type DeviceInfo = {
   os: string
   arch: string
@@ -52,6 +73,7 @@ export type AnalysisResult = {
     documentName: string
     quote: string
   }>
+  contractReview: ContractReview
   chunks: SourceChunk[]
   log: InferenceLog
 }

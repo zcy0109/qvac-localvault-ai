@@ -5,8 +5,11 @@ import {
   CheckCircle2,
   FileText,
   Gauge,
+  ListChecks,
   Lock,
   Play,
+  ShieldAlert,
+  ShieldCheck,
   Trash2,
   Upload,
 } from 'lucide-react'
@@ -28,6 +31,22 @@ type AnalysisResult = {
     documentName: string
     quote: string
   }>
+  contractReview: {
+    keyMetrics: Array<{
+      label: string
+      value: string
+      evidence: string
+    }>
+    missingClauses: Array<{
+      title: string
+      evidence: string
+      risk: string
+      action: string
+    }>
+    risks: string[]
+    actionItems: string[]
+    brief: string
+  }
   log: {
     provider: string
     purpose: string
@@ -240,20 +259,7 @@ function App() {
           )}
 
           {result && (
-            <div className="output">
-              <section>
-                <h3>Summary</h3>
-                <p>{cleanDisplayText(result.summary, 'summary')}</p>
-              </section>
-              <section>
-                <h3>Answer</h3>
-                <p>{cleanDisplayText(result.answer, 'answer')}</p>
-              </section>
-              <section className="two-column">
-                <ListBlock title="Risks" items={cleanList(result.risks)} />
-                <ListBlock title="Action Items" items={cleanList(result.actionItems)} />
-              </section>
-            </div>
+            <ContractReviewPanel result={result} />
           )}
         </section>
 
@@ -315,15 +321,100 @@ function Metric({
   )
 }
 
-function ListBlock({ title, items }: { title: string; items: string[] }) {
+function ContractReviewPanel({ result }: { result: AnalysisResult }) {
+  const review = result.contractReview
+  const missingClauses = review.missingClauses
+  const keyMetrics = review.keyMetrics
+  const risks = cleanList(review.risks)
+  const actionItems = cleanList(review.actionItems)
+
   return (
-    <div>
-      <h3>{title}</h3>
-      <ul>
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+    <div className="output review-output">
+      <section className="review-hero">
+        <div>
+          <h3>Contract Overview</h3>
+          <p>{cleanDisplayText(result.summary, 'summary')}</p>
+        </div>
+        <div className="review-score">
+          <span>Missing clauses</span>
+          <strong>{missingClauses.length}</strong>
+        </div>
+      </section>
+
+      <section>
+        <div className="section-heading">
+          <ListChecks size={17} />
+          <h3>Key Metrics</h3>
+        </div>
+        <div className="metric-list">
+          {keyMetrics.map((metric) => (
+            <article key={`${metric.label}-${metric.evidence}`} className="metric-card">
+              <span>{metric.label}</span>
+              <strong>{metric.value}</strong>
+              <p>{metric.evidence}</p>
+            </article>
+          ))}
+          {!keyMetrics.length && <p>No key numeric terms were extracted.</p>}
+        </div>
+      </section>
+
+      <section>
+        <div className="section-heading">
+          <ShieldAlert size={17} />
+          <h3>Missing Clauses</h3>
+        </div>
+        <div className="finding-list">
+          {missingClauses.map((finding) => (
+            <article key={finding.title} className="finding-card high">
+              <div>
+                <span className="severity">High</span>
+                <h4>{finding.title}</h4>
+              </div>
+              <p>{finding.risk}</p>
+              <blockquote>{finding.evidence}</blockquote>
+            </article>
+          ))}
+          {!missingClauses.length && (
+            <article className="finding-card clean">
+              <div>
+                <span className="severity">Clear</span>
+                <h4>No explicit missing-clause marker found</h4>
+              </div>
+              <p>The local deterministic review did not detect the demo missing-clause patterns.</p>
+            </article>
+          )}
+        </div>
+      </section>
+
+      <section className="two-column">
+        <div>
+          <div className="section-heading">
+            <ShieldCheck size={17} />
+            <h3>Risk Register</h3>
+          </div>
+          <ul className="compact-list">
+            {risks.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <div className="section-heading">
+            <CheckCircle2 size={17} />
+            <h3>Action Plan</h3>
+          </div>
+          <ul className="compact-list">
+            {actionItems.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h3>QVAC Local Analysis</h3>
+        <p>{cleanDisplayText(result.answer, 'answer')}</p>
+      </section>
     </div>
   )
 }
