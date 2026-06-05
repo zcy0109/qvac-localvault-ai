@@ -10,6 +10,7 @@
     "server": "tsx watch server/index.ts",
     "server:once": "tsx server/index.ts",
     "qvac:smoke": "tsx server/qvac-smoke.ts",
+    "validate:demo": "tsx server/validate-demo.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

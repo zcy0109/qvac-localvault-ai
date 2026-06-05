@@ -1,86 +1,31 @@
 # LocalVault AI
 
-LocalVault AI 是一个面向 QVAC Hackathon「通用设备」轨道的本地优先隐私文档智能工作台。
+LocalVault AI 是一个面向 QVAC Hackathon 通用设备赛道的本地优先隐私文档智能工作台。项目目标是在消费级笔记本或台式机上，用 QVAC SDK 完成私密文档审查、关键条款提取、风险登记、行动计划生成和可审计证据导出，不依赖远程 AI API。
 
-项目目标是把一台消费级笔记本或台式机变成私密文档审查工作站。用户可以上传 PDF、笔记、合同和研究资料，应用通过 QVAC SDK 在本机完成推理和 RAG 风格的文档工作流，并导出可审计的性能日志，方便评委验证。
+## 赛道定位
 
-## 参赛轨道
+- 赛道：General Purpose Devices
+- 设备：消费级 Windows 笔记本，16 GB RAM，RTX 3050 Ti Laptop GPU
+- 场景：企业合同、内部政策、研究资料、保密文档的本地审查
+- 核心价值：敏感文档不离开本机，评委可以用日志、哈希、引用分片和硬件信息复现审查过程
 
-轨道：通用设备（General Purpose Devices）
+## 核心功能
 
-LocalVault AI 对应官方公告里的这些方向：
+- 上传 PDF、TXT、Markdown 文档
+- 自动清空旧工作区，避免知识库上下文污染
+- 使用本地分片检索和 QVAC 推理完成保密审查
+- 确定性识别合同关键指标和缺失条款
+- 将关键指标、风险卡片和右侧引用证据分片绑定
+- 记录 QVAC SDK 版本、模型、TTFT、TPS、模型加载时间、文档哈希、Prompt 哈希、硬件信息和远程调用情况
+- 导出 `evidence/logs/latest-demo-run.json` 和 `evidence/logs/validation-report.json`
 
-- 隐私优先的企业工具
-- 本地文档智能
-- 个人知识库
-- 高级 RAG 管道
-- 消费级硬件上的 agentic workflow
+## 当前 QVAC 集成
 
-## 功能
-
-- 支持上传 PDF、TXT、Markdown 文档。
-- 对本地私密文档进行切块和检索。
-- Confidential Review 工作流：摘要、问答、风险点、行动清单、引用来源。
-- QVAC SDK 适配器，基于官方 `loadModel`、`completion` 和流式 token API。
-- 开发 fallback provider，用于在 QVAC 安装验证前先完成 UI 和证据链开发。
-- 自动导出可审计推理日志到 `evidence/logs/latest-demo-run.json`。
-- 提供 `api-disclosure.json`，披露远程 API 调用情况。
-- 自动记录硬件信息，方便复现和评审。
-
-## 当前 QVAC 状态
-
-QVAC 集成代码位于：
-
-```text
-server/inference.ts
-```
-
-官方 npm quickstart 使用的接口大致如下：
-
-```js
-import {
-  loadModel,
-  LLAMA_3_2_1B_INST_Q4_0,
-  completion,
-  unloadModel,
-} from '@qvac/sdk'
-```
-
-2026 年 6 月 2 日本地安装测试中：
-
-- `@qvac/sdk@0.11.0` 安装失败，原因是 npm 无法解析 `@qvac/transcription-whispercpp@^0.7.0`。
-- `@qvac/sdk@1.1.0` 安装失败，原因是 npm 无法解析 `@qvac/decoder-audio@^0.1.0`。
-- `@qvac/sdk@0.10.2` 安装成功，因此当前项目先锁定这个版本。
-
-当前依赖：
-
-```json
-"@qvac/sdk": "^0.10.2"
-```
-
-当前真实 QVAC 路径已经跑通：
-
+- SDK：`@qvac/sdk@0.10.2`
 - 模型：`QWEN3_600M_INST_Q4`
-- 本地缓存目录：`C:\Users\张晨宇\.qvac\models`
-- 最新日志：`evidence/logs/latest-demo-run.json`
-- 最新日志状态：`provider: qvac`，`remote_api_calls: []`
-
-开发阶段仍可使用 mock provider 快速调 UI，但最终提交给 DoraHacks 的日志必须来自真实 QVAC provider。
-
-开发模式：
-
-```powershell
-$env:LOCALVAULT_PROVIDER='mock'
-npm run dev
-```
-
-最终评审模式：
-
-```powershell
-$env:LOCALVAULT_PROVIDER='qvac'
-$env:LOCALVAULT_REQUIRE_QVAC='true'
-npm run dev
-```
+- 推理入口：`server/inference.ts`
+- 审查入口：`server/analysis.ts`
+- API 披露：`evidence/api-disclosure.json`
 
 最终提交日志必须显示：
 
@@ -89,39 +34,12 @@ provider: qvac
 remote_api_calls: []
 ```
 
-## 开发硬件
-
-初始开发机器：
-
-- CPU：11th Gen Intel Core i5-11400H，6 核 / 12 线程
-- RAM：16 GB
-- GPU：NVIDIA GeForce RTX 3050 Ti Laptop GPU，4 GB 显存
-- 系统：Windows
-
-硬件截图请保存到：
-
-```text
-evidence/hardware-screenshots/
-```
-
 ## 本地运行
-
-先进入项目目录：
-
-```powershell
-cd "C:\Users\张晨宇\Documents\Codex\2026-06-02\new-chat\qvac-localvault-ai"
-```
-
-安装依赖：
 
 ```powershell
 npm install
-```
-
-启动开发模式：
-
-```powershell
-$env:LOCALVAULT_PROVIDER='mock'
+$env:LOCALVAULT_PROVIDER='qvac'
+$env:LOCALVAULT_REQUIRE_QVAC='true'
 npm run dev
 ```
 
@@ -131,17 +49,33 @@ npm run dev
 http://127.0.0.1:5173
 ```
 
-QVAC SDK 验证：
+## 自动验证
+
+评委或开发者可以运行：
 
 ```powershell
 $env:LOCALVAULT_PROVIDER='qvac'
 $env:LOCALVAULT_REQUIRE_QVAC='true'
-npm run qvac:smoke
+npm run validate:demo
 ```
 
-## Evidence Bundle
+该命令会使用 `evidence/sample-documents/confidential-vendor-contract.md` 执行一次完整审查，并断言：
 
-证据材料目录结构：
+- provider 为 `qvac`
+- 远程 AI 调用为 0
+- 识别 5 个缺失条款
+- 识别 9 个关键指标
+- 所有缺失条款和关键指标都有证据分片
+- 展示用分析说明没有泄露模型思考或 JSON 指令
+- 文档哈希和 Prompt 哈希已记录
+
+验证报告会写入：
+
+```text
+evidence/logs/validation-report.json
+```
+
+## 证据目录
 
 ```text
 evidence/
@@ -149,20 +83,21 @@ evidence/
   api-disclosure.json
   logs/
     latest-demo-run.json
+    validation-report.json
   sample-documents/
-    sample-confidential-review.md
+    confidential-vendor-contract.md
   hardware-screenshots/
 ```
 
-## 评审复现路径
+## 演示重点
 
-评委可以按下面方式验证项目：
-
-1. 本地安装并运行应用。
-2. 上传样本文档。
-3. 执行 Confidential Review。
-4. 检查回答是否带有本地引用片段。
-5. 检查 evidence 日志中的 provider、model、TTFT、TPS、tokens、硬件信息和远程 API 披露。
+1. 展示硬件：CPU、RAM、GPU、Windows 系统信息。
+2. 启动 QVAC 模式，确认 provider 为 `qvac`。
+3. 上传示例供应商保密合同。
+4. 运行本地审查，展示 5 个缺失条款和 9 个关键指标。
+5. 点击证据分片，证明每条结论都能追溯到本地文档片段。
+6. 打开证据日志，展示 `remote_api_calls: []`、SDK 版本、文档哈希、Prompt 哈希和性能指标。
+7. 运行 `npm run validate:demo`，生成可复现验证报告。
 
 ## 许可证
 

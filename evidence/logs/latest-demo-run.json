@@ -1,0 +1,98 @@
+{
+  "id": "ed9ea847-3d13-4988-a662-367d9814e369",
+  "timestamp": "2026-06-05T13:05:17.896Z",
+  "provider": "qvac",
+  "purpose": "confidential-document-review",
+  "analysis_mode": "hybrid-deterministic-contract-review",
+  "model": "QWEN3_600M_INST_Q4",
+  "qvac_sdk_version": "0.10.2",
+  "model_load_ms": 4652,
+  "prompt_chars": 10942,
+  "system_prompt_hash": "075c6050d07762beca6dc00c38d460fb08bfc546885e7e18cf104f3a5e39655d",
+  "prompt_tokens_estimate": 2736,
+  "output_chars": 2013,
+  "output_tokens_estimate": 504,
+  "ttft_ms": 9827,
+  "generation_ttft_ms": 4396,
+  "generation_ms": 8049,
+  "tokens_per_second": 62.62,
+  "end_to_end_tokens_per_second": 39.68,
+  "total_inference_ms": 12701,
+  "document_count": 1,
+  "input_file_names": [
+    "confidential-vendor-contract.md"
+  ],
+  "document_hashes": [
+    {
+      "name": "confidential-vendor-contract.md",
+      "sha256": "ae6bdd78fc674b6a0166ddcf9f3e2dd26924a455a66869689bf83edd09836fbb",
+      "chars": 5581
+    }
+  ],
+  "chunk_count": 8,
+  "retrieved_chunks": [
+    {
+      "id": "ab5e1104466c",
+      "documentName": "confidential-vendor-contract.md",
+      "index": 6,
+      "score": 31
+    },
+    {
+      "id": "35dcd116a7e0",
+      "documentName": "confidential-vendor-contract.md",
+      "index": 5,
+      "score": 27
+    },
+    {
+      "id": "cdc17165fbed",
+      "documentName": "confidential-vendor-contract.md",
+      "index": 1,
+      "score": 20.999
+    },
+    {
+      "id": "865b7a57f698",
+      "documentName": "confidential-vendor-contract.md",
+      "index": 4,
+      "score": 18.999
+    },
+    {
+      "id": "0fbca5e6f5dc",
+      "documentName": "confidential-vendor-contract.md",
+      "index": 0,
+      "score": 13
+    },
+    {
+      "id": "0b0d5e33c710",
+      "documentName": "confidential-vendor-contract.md",
+      "index": 3,
+      "score": 12.999
+    },
+    {
+      "id": "45e114718600",
+      "documentName": "confidential-vendor-contract.md",
+      "index": 2,
+      "score": 0
+    }
+  ],
+  "selected_chunks": [
+    "ab5e1104466c",
+    "35dcd116a7e0",
+    "cdc17165fbed",
+    "865b7a57f698",
+    "0fbca5e6f5dc",
+    "0b0d5e33c710",
+    "45e114718600"
+  ],
+  "missing_clause_count": 5,
+  "key_metric_count": 9,
+  "device_info": {
+    "os": "Windows_NT 10.0.19045",
+    "arch": "x64",
+    "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
+    "cpu_count": 12,
+    "total_ram_gb": 15.71,
+    "free_ram_gb": 4.23,
+    "node": "v24.12.0"
+  },
+  "remote_api_calls": []
+}

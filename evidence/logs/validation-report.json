@@ -1,0 +1,63 @@
+{
+  "ok": true,
+  "timestamp": "2026-06-05T13:05:17.901Z",
+  "sample": "evidence\\sample-documents\\confidential-vendor-contract.md",
+  "checks": [
+    {
+      "name": "provider is qvac",
+      "ok": true
+    },
+    {
+      "name": "no remote AI calls",
+      "ok": true
+    },
+    {
+      "name": "five missing clauses detected",
+      "ok": true
+    },
+    {
+      "name": "nine key metrics detected",
+      "ok": true
+    },
+    {
+      "name": "all missing clauses have evidence chunks",
+      "ok": true
+    },
+    {
+      "name": "all key metrics have evidence chunks",
+      "ok": true
+    },
+    {
+      "name": "public analysis note has no hidden reasoning leak",
+      "ok": true
+    },
+    {
+      "name": "document hash recorded",
+      "ok": true
+    },
+    {
+      "name": "prompt hash recorded",
+      "ok": true
+    }
+  ],
+  "metrics": {
+    "provider": "qvac",
+    "model": "QWEN3_600M_INST_Q4",
+    "qvac_sdk_version": "0.10.2",
+    "remote_api_calls": [],
+    "missing_clause_count": 5,
+    "key_metric_count": 9,
+    "citation_count": 7,
+    "generation_ttft_ms": 4396,
+    "generation_ms": 8049,
+    "model_load_ms": 4652,
+    "total_inference_ms": 12701,
+    "tokens_per_second": 62.62,
+    "end_to_end_tokens_per_second": 39.68
+  },
+  "evidence": {
+    "latest_demo_run": "evidence/logs/latest-demo-run.json",
+    "validation_report": "evidence/logs/validation-report.json",
+    "api_disclosure": "evidence/api-disclosure.json"
+  }
+}
