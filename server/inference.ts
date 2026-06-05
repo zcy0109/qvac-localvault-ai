@@ -15,8 +15,6 @@ type CompletionOutput = {
 }
 
 let qvacModelId: string | undefined
-let qvacModelLoadMs = 0
-
 export async function runCompletion({
   prompt,
   purpose,
@@ -49,6 +47,8 @@ async function runQvacCompletion({
   const qvac = await import('@qvac/sdk')
   const modelSrc = qvac.QWEN3_600M_INST_Q4 ?? qvac.LLAMA_3_2_1B_INST_Q4_0
   const model = modelSrc.name ?? 'QWEN3_600M_INST_Q4'
+  let modelLoadMs = 0
+  let modelReadyAt = performance.now()
 
   if (!qvacModelId) {
     const loadStarted = performance.now()
@@ -58,7 +58,8 @@ async function runQvacCompletion({
       modelConfig: { ctx_size: 4096 },
       onProgress: (progress: unknown) => console.info('[QVAC]', progress),
     })
-    qvacModelLoadMs = Math.round(performance.now() - loadStarted)
+    modelReadyAt = performance.now()
+    modelLoadMs = Math.round(modelReadyAt - loadStarted)
   }
 
   const result = qvac.completion({
@@ -86,6 +87,7 @@ async function runQvacCompletion({
   text = final.contentText || final.raw.fullText || text
 
   const totalMs = Math.round(performance.now() - started)
+  const generationMs = Math.max(1, totalMs - modelLoadMs)
   const outputTokens = estimateTokens(text)
 
   return {
@@ -94,12 +96,17 @@ async function runQvacCompletion({
       provider: 'qvac',
       purpose,
       model,
-      modelLoadMs: qvacModelLoadMs,
+      modelLoadMs,
       prompt,
       output: text,
       ttftMs: firstTokenAt ? Math.round(firstTokenAt - started) : totalMs,
+      generationTtftMs: firstTokenAt
+        ? Math.max(0, Math.round(firstTokenAt - modelReadyAt))
+        : generationMs,
+      generationMs,
       totalMs,
-      tokensPerSecond: outputTokens / Math.max(totalMs / 1000, 0.001),
+      tokensPerSecond: outputTokens / Math.max(generationMs / 1000, 0.001),
+      endToEndTokensPerSecond: outputTokens / Math.max(totalMs / 1000, 0.001),
       selectedChunks,
       remoteApiCalls: [],
     }),
@@ -156,8 +163,11 @@ async function runMockCompletion({
       prompt,
       output: text,
       ttftMs: 120,
+      generationTtftMs: 120,
+      generationMs: totalMs,
       totalMs,
       tokensPerSecond: outputTokens / Math.max(totalMs / 1000, 0.001),
+      endToEndTokensPerSecond: outputTokens / Math.max(totalMs / 1000, 0.001),
       selectedChunks,
       remoteApiCalls: [],
     }),
@@ -172,8 +182,11 @@ function makeLog(input: {
   prompt: string
   output: string
   ttftMs: number
+  generationTtftMs: number
+  generationMs: number
   totalMs: number
   tokensPerSecond: number
+  endToEndTokensPerSecond: number
   selectedChunks: SourceChunk[]
   remoteApiCalls: string[]
 }): InferenceLog {
@@ -192,7 +205,10 @@ function makeLog(input: {
     output_chars: input.output.length,
     output_tokens_estimate: estimateTokens(input.output),
     ttft_ms: input.ttftMs,
+    generation_ttft_ms: input.generationTtftMs,
+    generation_ms: input.generationMs,
     tokens_per_second: Number(input.tokensPerSecond.toFixed(2)),
+    end_to_end_tokens_per_second: Number(input.endToEndTokensPerSecond.toFixed(2)),
     total_inference_ms: input.totalMs,
     document_count: 0,
     input_file_names: [],

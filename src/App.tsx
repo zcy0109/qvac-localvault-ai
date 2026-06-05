@@ -59,7 +59,10 @@ type AnalysisResult = {
     prompt_tokens_estimate: number
     output_tokens_estimate: number
     ttft_ms: number
+    generation_ttft_ms?: number
+    generation_ms?: number
     tokens_per_second: number
+    end_to_end_tokens_per_second?: number
     total_inference_ms: number
     document_count?: number
     input_file_names?: string[]
@@ -292,12 +295,18 @@ function App() {
           {result ? (
             <>
               <div className="log-grid">
-                <Metric label="首 token 延迟" value={`${result.log.ttft_ms} ms`} />
+                <Metric
+                  label="首 token 延迟"
+                  value={`${result.log.generation_ttft_ms ?? result.log.ttft_ms} ms`}
+                />
                 <Metric
                   label="生成速度 TPS"
                   value={result.log.tokens_per_second.toString()}
                 />
-                <Metric label="总耗时" value={`${result.log.total_inference_ms} ms`} />
+                <Metric
+                  label="生成耗时"
+                  value={`${result.log.generation_ms ?? result.log.total_inference_ms} ms`}
+                />
                 <Metric label="模型加载" value={`${result.log.model_load_ms} ms`} />
               </div>
               <div className="audit">
@@ -327,6 +336,17 @@ function App() {
                   value={`${result.log.missing_clause_count ?? 0} / ${
                     result.log.key_metric_count ?? 0
                   }`}
+                />
+                <EvidenceItem
+                  label="端到端总耗时"
+                  value={`${result.log.total_inference_ms} ms`}
+                />
+                <EvidenceItem
+                  label="端到端 TPS"
+                  value={
+                    result.log.end_to_end_tokens_per_second ??
+                    result.log.tokens_per_second
+                  }
                 />
               </div>
               <h3>引用证据</h3>
@@ -484,7 +504,7 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
       </section>
 
       <section>
-        <h3>QVAC 本地分析</h3>
+        <h3>本地分析说明</h3>
         <p>{cleanDisplayText(result.answer, 'answer')}</p>
       </section>
     </div>

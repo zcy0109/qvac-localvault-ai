@@ -28,7 +28,10 @@ export type InferenceLog = {
   output_chars: number
   output_tokens_estimate: number
   ttft_ms: number
+  generation_ttft_ms: number
+  generation_ms: number
   tokens_per_second: number
+  end_to_end_tokens_per_second: number
   total_inference_ms: number
   document_count: number
   input_file_names: string[]

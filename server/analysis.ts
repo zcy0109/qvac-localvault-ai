@@ -170,10 +170,10 @@ function mergeContractSignals(
   const modelActions = parsed.actionItems.filter(isBusinessFinding)
   const deterministicSummary = contractSignals.brief
   const summary = deterministicSummary || parsed.summary
-  const answer = joinSections([
-    deterministicSummary ? `Local deterministic review: ${deterministicSummary}` : '',
-    parsed.answer,
-  ])
+  const answer = buildPublicAnalysisNote(deterministicSummary, {
+    modelRiskCount: modelRisks.length,
+    modelActionCount: modelActions.length,
+  })
   const risks = uniqueStrings([...contractSignals.risks, ...modelRisks])
   const actionItems = uniqueStrings([
     ...contractSignals.actionItems,
@@ -192,10 +192,19 @@ function mergeContractSignals(
   }
 }
 
-function joinSections(values: string[]) {
-  return uniqueStrings(values.map((value) => value.trim()).filter(Boolean)).join(
-    '\n\n',
-  )
+function buildPublicAnalysisNote(
+  deterministicSummary: string,
+  counts: { modelRiskCount: number; modelActionCount: number },
+) {
+  const parts = [
+    deterministicSummary
+      ? `本地确定性审查已完成：${deterministicSummary}`
+      : '本地确定性审查已完成。',
+    `QVAC 本地模型已基于检索片段完成补充审查，模型输出已合并到风险登记和行动计划中。补充风险 ${counts.modelRiskCount} 条，补充行动项 ${counts.modelActionCount} 条。`,
+    '所有展示结论均来自本地文档片段、确定性规则或本机 QVAC 推理；未调用远程 AI API。',
+  ]
+
+  return parts.join('\n\n')
 }
 
 function uniqueStrings(values: string[]) {
