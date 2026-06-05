@@ -59,12 +59,18 @@ export type ContractFinding = {
   evidence: string
   risk: string
   action: string
+  evidenceChunkId?: string
+  evidenceDocumentName?: string
+  evidenceChunkIndex?: number
 }
 
 export type ContractMetric = {
   label: string
   value: string
   evidence: string
+  evidenceChunkId?: string
+  evidenceDocumentName?: string
+  evidenceChunkIndex?: number
 }
 
 export type ContractReview = {

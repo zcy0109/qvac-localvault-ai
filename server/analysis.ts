@@ -4,7 +4,14 @@ import crypto from 'node:crypto'
 import { reviewContractLocally } from './contract-review.js'
 import { chunkDocuments, retrieveChunks } from './rag.js'
 import { runCompletion } from './inference.js'
-import type { AnalysisResult, DocumentInput, InferenceLog } from './types.js'
+import type {
+  AnalysisResult,
+  ContractFinding,
+  ContractMetric,
+  DocumentInput,
+  InferenceLog,
+  SourceChunk,
+} from './types.js'
 
 export async function analyzeDocuments(input: {
   documents: DocumentInput[]
@@ -15,13 +22,17 @@ export async function analyzeDocuments(input: {
   )
   const contractSignals = reviewContractLocally(cleanDocuments)
   const chunks = chunkDocuments(cleanDocuments)
-  const selectedChunks = retrieveChunks(
-    chunks,
-    `${input.question} summary risks action items confidentiality obligations missing clauses breach notification audit rights force majeure intellectual property security reports incident response SLA retention liquidated damages`,
-    6,
-  )
+  const signalsWithEvidence = attachEvidenceReferences(contractSignals, chunks)
+  const selectedChunks = uniqueChunks([
+    ...retrieveChunks(
+      chunks,
+      `${input.question} summary risks action items confidentiality obligations missing clauses breach notification audit rights force majeure intellectual property security reports incident response SLA retention liquidated damages`,
+      6,
+    ),
+    ...evidenceChunks(signalsWithEvidence, chunks),
+  ])
 
-  const prompt = buildPrompt(input.question, selectedChunks, contractSignals)
+  const prompt = buildPrompt(input.question, selectedChunks, signalsWithEvidence)
   const completion = await runCompletion({
     prompt,
     purpose: 'confidential-document-review',
@@ -29,17 +40,17 @@ export async function analyzeDocuments(input: {
   })
 
   const parsed = parseStructuredCompletion(stripThinking(completion.text))
-  const merged = mergeContractSignals(parsed, contractSignals)
+  const merged = mergeContractSignals(parsed, signalsWithEvidence)
   const log = await enrichEvidenceLog({
     log: completion.log,
     prompt,
     cleanDocuments,
     chunks,
     selectedChunks,
-    missingClauseCount: contractSignals.missingClauses.length,
-    keyMetricCount: contractSignals.keyMetrics.length,
+    missingClauseCount: signalsWithEvidence.missingClauses.length,
+    keyMetricCount: signalsWithEvidence.keyMetrics.length,
   })
-  const citations = selectedChunks.slice(0, 6).map((chunk) => ({
+  const citations = selectedChunks.slice(0, 10).map((chunk) => ({
     chunkId: chunk.id,
     documentName: chunk.documentName,
     quote: chunk.text.slice(0, 260),
@@ -52,7 +63,7 @@ export async function analyzeDocuments(input: {
     actionItems: merged.actionItems,
     citations,
     contractReview: {
-      ...contractSignals,
+      ...signalsWithEvidence,
       risks: merged.risks,
       actionItems: merged.actionItems,
     },
@@ -67,7 +78,7 @@ export async function analyzeDocuments(input: {
 
 function buildPrompt(
   question: string,
-  chunks: ReturnType<typeof retrieveChunks>,
+  chunks: SourceChunk[],
   contractSignals: ReturnType<typeof reviewContractLocally>,
 ) {
   const context = chunks
@@ -198,13 +209,94 @@ function buildPublicAnalysisNote(
 ) {
   const parts = [
     deterministicSummary
-      ? `本地确定性审查已完成：${deterministicSummary}`
-      : '本地确定性审查已完成。',
-    `QVAC 本地模型已基于检索片段完成补充审查，模型输出已合并到风险登记和行动计划中。补充风险 ${counts.modelRiskCount} 条，补充行动项 ${counts.modelActionCount} 条。`,
-    '所有展示结论均来自本地文档片段、确定性规则或本机 QVAC 推理；未调用远程 AI API。',
+      ? `\u672C\u5730\u786E\u5B9A\u6027\u5BA1\u67E5\u5DF2\u5B8C\u6210\uFF1A${deterministicSummary}`
+      : '\u672C\u5730\u786E\u5B9A\u6027\u5BA1\u67E5\u5DF2\u5B8C\u6210\u3002',
+    `QVAC \u672C\u5730\u6A21\u578B\u5DF2\u57FA\u4E8E\u68C0\u7D22\u7247\u6BB5\u5B8C\u6210\u8865\u5145\u5BA1\u67E5\uFF0C\u6A21\u578B\u8F93\u51FA\u5DF2\u5408\u5E76\u5230\u98CE\u9669\u767B\u8BB0\u548C\u884C\u52A8\u8BA1\u5212\u4E2D\u3002\u8865\u5145\u98CE\u9669 ${counts.modelRiskCount} \u6761\uFF0C\u8865\u5145\u884C\u52A8\u9879 ${counts.modelActionCount} \u6761\u3002`,
+    '\u6240\u6709\u5C55\u793A\u7ED3\u8BBA\u5747\u6765\u81EA\u672C\u5730\u6587\u6863\u7247\u6BB5\u3001\u786E\u5B9A\u6027\u89C4\u5219\u6216\u672C\u673A QVAC \u63A8\u7406\uFF1B\u672A\u8C03\u7528\u8FDC\u7A0B AI API\u3002',
   ]
 
   return parts.join('\n\n')
+}
+
+function attachEvidenceReferences(
+  contractSignals: ReturnType<typeof reviewContractLocally>,
+  chunks: SourceChunk[],
+) {
+  return {
+    ...contractSignals,
+    missingClauses: contractSignals.missingClauses.map((finding) =>
+      attachFindingReference(finding, chunks),
+    ),
+    keyMetrics: contractSignals.keyMetrics.map((metric) =>
+      attachMetricReference(metric, chunks),
+    ),
+  }
+}
+
+function attachFindingReference(
+  finding: ContractFinding,
+  chunks: SourceChunk[],
+): ContractFinding {
+  const chunk = findEvidenceChunk(finding.evidence, chunks)
+  if (!chunk) return finding
+
+  return {
+    ...finding,
+    evidenceChunkId: chunk.id,
+    evidenceDocumentName: chunk.documentName,
+    evidenceChunkIndex: chunk.index,
+  }
+}
+
+function attachMetricReference(
+  metric: ContractMetric,
+  chunks: SourceChunk[],
+): ContractMetric {
+  const chunk = findEvidenceChunk(metric.evidence, chunks)
+  if (!chunk) return metric
+
+  return {
+    ...metric,
+    evidenceChunkId: chunk.id,
+    evidenceDocumentName: chunk.documentName,
+    evidenceChunkIndex: chunk.index,
+  }
+}
+
+function evidenceChunks(
+  contractSignals: ReturnType<typeof reviewContractLocally>,
+  chunks: SourceChunk[],
+) {
+  const evidenceIds = new Set([
+    ...contractSignals.missingClauses
+      .map((finding) => finding.evidenceChunkId)
+      .filter(Boolean),
+    ...contractSignals.keyMetrics
+      .map((metric) => metric.evidenceChunkId)
+      .filter(Boolean),
+  ])
+
+  return chunks.filter((chunk) => evidenceIds.has(chunk.id))
+}
+
+function findEvidenceChunk(evidence: string, chunks: SourceChunk[]) {
+  const normalizedEvidence = normalizeForEvidence(evidence)
+  return chunks.find((chunk) =>
+    normalizeForEvidence(chunk.text).includes(normalizedEvidence),
+  )
+}
+
+function uniqueChunks(chunks: SourceChunk[]) {
+  const seen = new Set<string>()
+  return chunks.filter((chunk) => {
+    if (seen.has(chunk.id)) return false
+    seen.add(chunk.id)
+    return true
+  })
+}
+
+function normalizeForEvidence(value: string) {
+  return value.toLowerCase().replace(/\s+/gu, ' ').trim()
 }
 
 function uniqueStrings(values: string[]) {
@@ -283,8 +375,8 @@ async function enrichEvidenceLog(input: {
   log: InferenceLog
   prompt: string
   cleanDocuments: DocumentInput[]
-  chunks: ReturnType<typeof chunkDocuments>
-  selectedChunks: ReturnType<typeof retrieveChunks>
+  chunks: SourceChunk[]
+  selectedChunks: SourceChunk[]
   missingClauseCount: number
   keyMetricCount: number
 }): Promise<InferenceLog> {

@@ -303,6 +303,13 @@ button:disabled {
   padding: 11px;
 }
 
+.metric-card.linked,
+.finding-card.linked,
+.citation.active {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.14);
+}
+
 .metric-card strong {
   display: block;
   font-size: 15px;
@@ -351,6 +358,15 @@ button:disabled {
   line-height: 1.45;
   margin: 10px 0 0;
   padding: 8px 10px;
+}
+
+.evidence-link {
+  background: #eef6f3;
+  border: 1px solid #c8ded8;
+  color: #164e43;
+  font-size: 12px;
+  margin-top: 10px;
+  padding: 7px 9px;
 }
 
 .severity {
@@ -438,6 +454,10 @@ ul {
   border-left: 3px solid #2f6f63;
   background: #f8faf9;
   padding: 10px 12px;
+}
+
+.citation.active {
+  background: #eef6f3;
 }
 
 .citation strong,

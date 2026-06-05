@@ -36,12 +36,18 @@ type AnalysisResult = {
       label: string
       value: string
       evidence: string
+      evidenceChunkId?: string
+      evidenceDocumentName?: string
+      evidenceChunkIndex?: number
     }>
     missingClauses: Array<{
       title: string
       evidence: string
       risk: string
       action: string
+      evidenceChunkId?: string
+      evidenceDocumentName?: string
+      evidenceChunkIndex?: number
     }>
     risks: string[]
     actionItems: string[]
@@ -102,6 +108,7 @@ function App() {
   const [status, setStatus] = useState('准备进行本地审查。')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [error, setError] = useState('')
+  const [activeCitationId, setActiveCitationId] = useState('')
 
   const totalChars = useMemo(
     () => documents.reduce((total, document) => total + document.text.length, 0),
@@ -134,6 +141,7 @@ function App() {
 
     setDocuments(extracted)
     setResult(null)
+    setActiveCitationId('')
     setStatus(
       `已载入 ${extracted.length} 个文件用于本地保密审查，旧工作区已清空。`,
     )
@@ -142,12 +150,14 @@ function App() {
   function removeDocument(id: string) {
     setDocuments((current) => current.filter((document) => document.id !== id))
     setResult(null)
+    setActiveCitationId('')
     setStatus('文件已从本地审查工作区移除。')
   }
 
   function clearWorkspace() {
     setDocuments([])
     setResult(null)
+    setActiveCitationId('')
     setError('')
     setStatus('工作区已清空。请上传下一组待审查文件。')
   }
@@ -174,7 +184,9 @@ function App() {
         throw new Error(payload.error ?? '分析失败。')
       }
 
-      setResult(await response.json())
+      const payload = await response.json()
+      setResult(payload)
+      setActiveCitationId(payload.citations?.[0]?.chunkId ?? '')
       setStatus('分析完成。证据日志已导出到本地。')
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '分析失败。')
@@ -282,7 +294,11 @@ function App() {
           )}
 
           {result && (
-            <ContractReviewPanel result={result} />
+            <ContractReviewPanel
+              activeCitationId={activeCitationId}
+              result={result}
+              onSelectCitation={setActiveCitationId}
+            />
           )}
         </section>
 
@@ -352,7 +368,14 @@ function App() {
               <h3>引用证据</h3>
               <div className="citation-list">
                 {result.citations.map((citation) => (
-                  <article key={citation.chunkId} className="citation">
+                  <article
+                    key={citation.chunkId}
+                    className={
+                      citation.chunkId === activeCitationId
+                        ? 'citation active'
+                        : 'citation'
+                    }
+                  >
                     <strong>{citation.documentName}</strong>
                     <span>{citation.chunkId}</span>
                     <p>{citation.quote}</p>
@@ -403,7 +426,15 @@ function EvidenceItem({
   )
 }
 
-function ContractReviewPanel({ result }: { result: AnalysisResult }) {
+function ContractReviewPanel({
+  activeCitationId,
+  result,
+  onSelectCitation,
+}: {
+  activeCitationId: string
+  result: AnalysisResult
+  onSelectCitation: (chunkId: string) => void
+}) {
   const review = result.contractReview ?? {
     keyMetrics: [],
     missingClauses: [],
@@ -440,10 +471,26 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
         </div>
         <div className="metric-list">
           {keyMetrics.map((metric) => (
-            <article key={`${metric.label}-${metric.evidence}`} className="metric-card">
+            <article
+              key={`${metric.label}-${metric.evidence}`}
+              className={
+                metric.evidenceChunkId === activeCitationId
+                  ? 'metric-card linked'
+                  : 'metric-card'
+              }
+            >
               <span>{metric.label}</span>
               <strong>{metric.value}</strong>
               <p>{metric.evidence}</p>
+              {metric.evidenceChunkId && (
+                <button
+                  type="button"
+                  className="evidence-link"
+                  onClick={() => onSelectCitation(metric.evidenceChunkId ?? '')}
+                >
+                  证据分片 {shortHash(metric.evidenceChunkId)}
+                </button>
+              )}
             </article>
           ))}
           {!keyMetrics.length && <p>未提取到关键数值条款。</p>}
@@ -457,13 +504,29 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
         </div>
         <div className="finding-list">
           {missingClauses.map((finding) => (
-            <article key={finding.title} className="finding-card high">
+            <article
+              key={finding.title}
+              className={
+                finding.evidenceChunkId === activeCitationId
+                  ? 'finding-card high linked'
+                  : 'finding-card high'
+              }
+            >
               <div>
                 <span className="severity">高风险</span>
                 <h4>{finding.title}</h4>
               </div>
               <p>{finding.risk}</p>
               <blockquote>{finding.evidence}</blockquote>
+              {finding.evidenceChunkId && (
+                <button
+                  type="button"
+                  className="evidence-link"
+                  onClick={() => onSelectCitation(finding.evidenceChunkId ?? '')}
+                >
+                  证据分片 {shortHash(finding.evidenceChunkId)}
+                </button>
+              )}
             </article>
           ))}
           {!missingClauses.length && (

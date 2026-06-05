@@ -168,7 +168,7 @@ function summarizeMetricValue(label: string, evidence: string) {
   return evidence
 }
 
-function deriveMetricRisks(metrics: Metric[]) {
+function deriveMetricRisks(metrics: ContractMetric[]) {
   return metrics.flatMap((metric) => {
     if (metric.label !== 'Liquidated damages') return []
 
@@ -178,7 +178,7 @@ function deriveMetricRisks(metrics: Metric[]) {
   })
 }
 
-function deriveMetricActions(metrics: Metric[]) {
+function deriveMetricActions(metrics: ContractMetric[]) {
   const actions: string[] = []
   const hasAuditLogs = metrics.some((metric) => metric.label === 'Audit log retention')
   const hasIncidentSla = metrics.some((metric) => metric.label === 'Incident response SLA')
