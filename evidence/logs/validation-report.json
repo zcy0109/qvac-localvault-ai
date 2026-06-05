@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "timestamp": "2026-06-05T13:05:17.901Z",
+  "timestamp": "2026-06-05T13:32:52.590Z",
   "sample": "evidence\\sample-documents\\confidential-vendor-contract.md",
   "checks": [
     {
@@ -47,13 +47,13 @@
     "remote_api_calls": [],
     "missing_clause_count": 5,
     "key_metric_count": 9,
-    "citation_count": 7,
-    "generation_ttft_ms": 4396,
-    "generation_ms": 8049,
-    "model_load_ms": 4652,
-    "total_inference_ms": 12701,
-    "tokens_per_second": 62.62,
-    "end_to_end_tokens_per_second": 39.68
+    "citation_count": 6,
+    "generation_ttft_ms": 4172,
+    "generation_ms": 7954,
+    "model_load_ms": 7819,
+    "total_inference_ms": 15773,
+    "tokens_per_second": 69.4,
+    "end_to_end_tokens_per_second": 35
   },
   "evidence": {
     "latest_demo_run": "evidence/logs/latest-demo-run.json",

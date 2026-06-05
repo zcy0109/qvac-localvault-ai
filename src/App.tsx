@@ -43,6 +43,7 @@ type AnalysisResult = {
     missingClauses: Array<{
       title: string
       evidence: string
+      evidenceAnchor?: string
       risk: string
       action: string
       evidenceChunkId?: string

@@ -237,7 +237,10 @@ function attachFindingReference(
   finding: ContractFinding,
   chunks: SourceChunk[],
 ): ContractFinding {
-  const chunk = findEvidenceChunk(finding.evidence, chunks)
+  const chunk = findEvidenceChunk(
+    finding.evidenceAnchor || finding.evidence,
+    chunks,
+  )
   if (!chunk) return finding
 
   return {

@@ -1,23 +1,23 @@
 {
-  "id": "ed9ea847-3d13-4988-a662-367d9814e369",
-  "timestamp": "2026-06-05T13:05:17.896Z",
+  "id": "9e29de0a-006e-4396-aafc-a4130c03b540",
+  "timestamp": "2026-06-05T13:32:52.584Z",
   "provider": "qvac",
   "purpose": "confidential-document-review",
   "analysis_mode": "hybrid-deterministic-contract-review",
   "model": "QWEN3_600M_INST_Q4",
   "qvac_sdk_version": "0.10.2",
-  "model_load_ms": 4652,
-  "prompt_chars": 10942,
-  "system_prompt_hash": "075c6050d07762beca6dc00c38d460fb08bfc546885e7e18cf104f3a5e39655d",
-  "prompt_tokens_estimate": 2736,
-  "output_chars": 2013,
-  "output_tokens_estimate": 504,
-  "ttft_ms": 9827,
-  "generation_ttft_ms": 4396,
-  "generation_ms": 8049,
-  "tokens_per_second": 62.62,
-  "end_to_end_tokens_per_second": 39.68,
-  "total_inference_ms": 12701,
+  "model_load_ms": 7819,
+  "prompt_chars": 10125,
+  "system_prompt_hash": "767c8d4abdf602a2c412496a023903d3212b055e710a5e3ab09229d2da94b2fb",
+  "prompt_tokens_estimate": 2532,
+  "output_chars": 2207,
+  "output_tokens_estimate": 552,
+  "ttft_ms": 12884,
+  "generation_ttft_ms": 4172,
+  "generation_ms": 7954,
+  "tokens_per_second": 69.4,
+  "end_to_end_tokens_per_second": 35,
+  "total_inference_ms": 15773,
   "document_count": 1,
   "input_file_names": [
     "confidential-vendor-contract.md"
@@ -25,35 +25,23 @@
   "document_hashes": [
     {
       "name": "confidential-vendor-contract.md",
-      "sha256": "ae6bdd78fc674b6a0166ddcf9f3e2dd26924a455a66869689bf83edd09836fbb",
-      "chars": 5581
+      "sha256": "2d362a359a1709bae8f3659eb0f1fce40c56f6cd93f6f0f08d1621e5e3e6dbee",
+      "chars": 4510
     }
   ],
-  "chunk_count": 8,
+  "chunk_count": 6,
   "retrieved_chunks": [
     {
-      "id": "ab5e1104466c",
-      "documentName": "confidential-vendor-contract.md",
-      "index": 6,
-      "score": 31
-    },
-    {
-      "id": "35dcd116a7e0",
-      "documentName": "confidential-vendor-contract.md",
-      "index": 5,
-      "score": 27
-    },
-    {
-      "id": "cdc17165fbed",
+      "id": "4552230ed1be",
       "documentName": "confidential-vendor-contract.md",
       "index": 1,
-      "score": 20.999
+      "score": 18.998
     },
     {
-      "id": "865b7a57f698",
+      "id": "eee990ffeaa8",
       "documentName": "confidential-vendor-contract.md",
       "index": 4,
-      "score": 18.999
+      "score": 16.999
     },
     {
       "id": "0fbca5e6f5dc",
@@ -62,26 +50,31 @@
       "score": 13
     },
     {
-      "id": "0b0d5e33c710",
+      "id": "ca0a6b9c8d3a",
       "documentName": "confidential-vendor-contract.md",
       "index": 3,
       "score": 12.999
     },
     {
-      "id": "45e114718600",
+      "id": "10a6a6a79ab1",
       "documentName": "confidential-vendor-contract.md",
       "index": 2,
-      "score": 0
+      "score": 5
+    },
+    {
+      "id": "0c835a486127",
+      "documentName": "confidential-vendor-contract.md",
+      "index": 5,
+      "score": 2.788
     }
   ],
   "selected_chunks": [
-    "ab5e1104466c",
-    "35dcd116a7e0",
-    "cdc17165fbed",
-    "865b7a57f698",
+    "4552230ed1be",
+    "eee990ffeaa8",
     "0fbca5e6f5dc",
-    "0b0d5e33c710",
-    "45e114718600"
+    "ca0a6b9c8d3a",
+    "10a6a6a79ab1",
+    "0c835a486127"
   ],
   "missing_clause_count": 5,
   "key_metric_count": 9,
@@ -91,7 +84,7 @@
     "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
     "cpu_count": 12,
     "total_ram_gb": 15.71,
-    "free_ram_gb": 4.23,
+    "free_ram_gb": 6.69,
     "node": "v24.12.0"
   },
   "remote_api_calls": []

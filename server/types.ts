@@ -57,6 +57,7 @@ export type InferenceLog = {
 export type ContractFinding = {
   title: string
   evidence: string
+  evidenceAnchor?: string
   risk: string
   action: string
   evidenceChunkId?: string

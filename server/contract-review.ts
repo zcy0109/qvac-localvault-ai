@@ -10,43 +10,66 @@ export type ContractReviewSignals = {
 
 const MISSING_CLAUSE_CHECKS: Array<{
   title: string
-  pattern: RegExp
+  requiredPatterns: RegExp[]
+  evidencePattern: RegExp
   risk: string
   action: string
 }> = [
   {
     title: 'Missing data breach notification deadline',
-    pattern: /No specified time limit for notifying Party A in case of a data breach/i,
+    requiredPatterns: [
+      /data breach[^.]{0,120}notif/i,
+      /notif[^.]{0,120}data breach/i,
+      /security incident[^.]{0,120}notif/i,
+      /notif[^.]{0,120}security incident/i,
+    ],
+    evidencePattern: /P1.*data breach risk|Party A reserves the right to terminate.*breach/i,
     risk: 'The contract does not define how quickly Party B must notify Party A after a data breach, which can delay incident response and regulatory handling.',
     action:
       'Add a breach notification clause with a concrete deadline, escalation channel, required evidence, and incident owner.',
   },
   {
     title: 'Missing Party A audit right',
-    pattern:
-      /No provision granting Party A the right to audit Party B's data processing activities/i,
+    requiredPatterns: [
+      /Party A[^.]{0,120}right[^.]{0,80}audit/i,
+      /Party A[^.]{0,120}audit[^.]{0,80}Party B/i,
+      /inspect[^.]{0,80}Party B[^.]{0,80}data processing/i,
+    ],
+    evidencePattern: /Audit Logs:.*minimum of 180 days|Access Control:.*least privilege/i,
     risk: 'Party A lacks an explicit right to inspect Party B data processing practices, making compliance verification difficult.',
     action:
       'Add an audit-right clause covering audit frequency, scope, notice period, evidence access, and remediation obligations.',
   },
   {
     title: 'Missing force majeure liability allocation',
-    pattern: /No clarification of liability in case of force majeure events/i,
+    requiredPatterns: [/force majeure/i, /act of god/i, /unforeseeable event/i],
+    evidencePattern: /Liability for Breach|Dispute Resolution|Miscellaneous/i,
     risk: 'The contract does not explain which obligations survive force majeure or how liability is allocated during exceptional events.',
     action:
       'Add a force majeure clause that separates excused delay from confidentiality, security, notification, and mitigation duties.',
   },
   {
     title: 'Missing intellectual property ownership',
-    pattern:
-      /No specification of intellectual property rights for any deliverables created during the service/i,
+    requiredPatterns: [
+      /intellectual property/i,
+      /IP ownership/i,
+      /ownership[^.]{0,120}deliverables/i,
+      /deliverables[^.]{0,120}ownership/i,
+    ],
+    evidencePattern: /technical documents|code snippets|documentation updates/i,
     risk: 'Ownership of service deliverables is undefined, which may create disputes over scripts, reports, configurations, or documentation.',
     action:
       'Add an IP ownership clause defining deliverables, background IP, license scope, source materials, and post-termination rights.',
   },
   {
     title: 'Missing regular security reporting requirement',
-    pattern: /No requirement for Party B to provide regular security reports to Party A/i,
+    requiredPatterns: [
+      /security report/i,
+      /periodic security/i,
+      /regular security/i,
+      /security summary/i,
+    ],
+    evidencePattern: /authorized personnel.*monthly|Audit Logs:.*minimum of 180 days|Access Control/i,
     risk: 'Party A does not receive a recurring security reporting commitment, reducing ongoing visibility into vendor controls.',
     action:
       'Add a reporting clause requiring periodic security summaries, incident statistics, access-review results, and open remediation items.',
@@ -63,13 +86,23 @@ export function reviewContractLocally(
     .filter(Boolean)
 
   const missingClauses = MISSING_CLAUSE_CHECKS.flatMap((check) => {
-    const evidence = findLine(lines, check.pattern)
-    if (!evidence) return []
+    const hasRequiredClause = check.requiredPatterns.some((pattern) =>
+      pattern.test(text),
+    )
+    if (hasRequiredClause) return []
+
+    const anchor =
+      findLine(lines, check.evidencePattern) ||
+      lines.find((line) => /^#{0,3}\s*\d+\./u.test(line)) ||
+      lines[0] ||
+      'No local contract passage available.'
+    const evidence = `No explicit clause detected. Closest reviewed passage: "${anchor}"`
 
     return [
       {
         title: check.title,
         evidence,
+        evidenceAnchor: anchor,
         risk: `${check.title}: ${check.risk} Evidence: "${evidence}"`,
         action: `${check.title}: ${check.action}`,
       },
