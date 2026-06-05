@@ -18,16 +18,35 @@ export type InferenceLog = {
   timestamp: string
   provider: string
   purpose: string
+  analysis_mode: string
   model: string
+  qvac_sdk_version: string
   model_load_ms: number
   prompt_chars: number
+  system_prompt_hash: string
   prompt_tokens_estimate: number
   output_chars: number
   output_tokens_estimate: number
   ttft_ms: number
   tokens_per_second: number
   total_inference_ms: number
+  document_count: number
+  input_file_names: string[]
+  document_hashes: Array<{
+    name: string
+    sha256: string
+    chars: number
+  }>
+  chunk_count: number
+  retrieved_chunks: Array<{
+    id: string
+    documentName: string
+    index: number
+    score: number
+  }>
   selected_chunks: string[]
+  missing_clause_count: number
+  key_metric_count: number
   device_info: DeviceInfo
   remote_api_calls: string[]
 }

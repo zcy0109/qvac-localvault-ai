@@ -50,14 +50,34 @@ type AnalysisResult = {
   log: {
     provider: string
     purpose: string
+    analysis_mode?: string
     model: string
+    qvac_sdk_version?: string
     model_load_ms: number
+    prompt_chars?: number
+    system_prompt_hash?: string
     prompt_tokens_estimate: number
     output_tokens_estimate: number
     ttft_ms: number
     tokens_per_second: number
     total_inference_ms: number
+    document_count?: number
+    input_file_names?: string[]
+    document_hashes?: Array<{
+      name: string
+      sha256: string
+      chars: number
+    }>
+    chunk_count?: number
+    retrieved_chunks?: Array<{
+      id: string
+      documentName: string
+      index: number
+      score: number
+    }>
     selected_chunks: string[]
+    missing_clause_count?: number
+    key_metric_count?: number
     device_info: {
       os: string
       cpu: string
@@ -76,7 +96,7 @@ function App() {
     'Review the uploaded confidential vendor contract. Summarize core obligations, identify legal and security risks, extract missing clauses or missing information, and create an action list.',
   )
   const [result, setResult] = useState<AnalysisResult | null>(null)
-  const [status, setStatus] = useState('Ready for local analysis.')
+  const [status, setStatus] = useState('准备进行本地审查。')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [error, setError] = useState('')
 
@@ -89,7 +109,7 @@ function App() {
     if (!files?.length) return
 
     setError('')
-    setStatus('Extracting local files...')
+    setStatus('正在提取本地文件...')
 
     const extracted: DocumentInput[] = []
     for (const file of Array.from(files)) {
@@ -102,7 +122,7 @@ function App() {
       })
 
       if (!response.ok) {
-        setError(`Could not extract ${file.name}. Try a TXT or Markdown file.`)
+        setError(`无法提取 ${file.name}。请尝试 TXT、Markdown 或可解析的 PDF。`)
         continue
       }
 
@@ -112,32 +132,32 @@ function App() {
     setDocuments(extracted)
     setResult(null)
     setStatus(
-      `${extracted.length} file(s) staged for private review. Previous workspace cleared.`,
+      `已载入 ${extracted.length} 个文件用于本地保密审查，旧工作区已清空。`,
     )
   }
 
   function removeDocument(id: string) {
     setDocuments((current) => current.filter((document) => document.id !== id))
     setResult(null)
-    setStatus('Document removed from the local review workspace.')
+    setStatus('文件已从本地审查工作区移除。')
   }
 
   function clearWorkspace() {
     setDocuments([])
     setResult(null)
     setError('')
-    setStatus('Workspace cleared. Upload the next document set to review.')
+    setStatus('工作区已清空。请上传下一组待审查文件。')
   }
 
   async function analyze() {
     if (!documents.length) {
-      setError('Upload at least one document first.')
+      setError('请先上传至少一个文件。')
       return
     }
 
     setIsAnalyzing(true)
     setError('')
-    setStatus('Running local confidential review...')
+    setStatus('正在运行本地保密审查...')
 
     try {
       const response = await fetch('/api/analyze', {
@@ -148,14 +168,14 @@ function App() {
 
       if (!response.ok) {
         const payload = await response.json()
-        throw new Error(payload.error ?? 'Analysis failed.')
+        throw new Error(payload.error ?? '分析失败。')
       }
 
       setResult(await response.json())
-      setStatus('Analysis complete. Evidence log exported locally.')
+      setStatus('分析完成。证据日志已导出到本地。')
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Analysis failed.')
-      setStatus('Analysis stopped.')
+      setError(caught instanceof Error ? caught.message : '分析失败。')
+      setStatus('分析已停止。')
     } finally {
       setIsAnalyzing(false)
     }
@@ -165,25 +185,25 @@ function App() {
     <main className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">QVAC Hackathon · General Purpose Devices</p>
+          <p className="eyebrow">QVAC 黑客马拉松 · 通用设备赛道</p>
           <h1>LocalVault AI</h1>
         </div>
         <div className="privacy-badge">
           <Lock size={18} />
-          Local-first document intelligence
+          本地优先的文档智能
         </div>
       </header>
 
       <section className="metrics">
-        <Metric label="Documents" value={documents.length.toString()} />
-        <Metric label="Local text" value={`${totalChars.toLocaleString()} chars`} />
+        <Metric label="文件" value={documents.length.toString()} />
+        <Metric label="本地文本" value={`${totalChars.toLocaleString()} 个字符`} />
         <Metric
-          label="Provider"
+          label="推理提供方"
           value={result?.log.provider ?? 'auto'}
           warning={result?.log.provider === 'mock-development'}
         />
         <Metric
-          label="Remote AI calls"
+          label="远程 AI 调用"
           value={result?.log.remote_api_calls.length.toString() ?? '0'}
         />
       </section>
@@ -192,7 +212,7 @@ function App() {
         <aside className="panel upload-panel">
           <div className="panel-title">
             <Upload size={18} />
-            <h2>Files</h2>
+            <h2>文件</h2>
           </div>
           <button
             type="button"
@@ -201,7 +221,7 @@ function App() {
             disabled={!documents.length || isAnalyzing}
           >
             <Trash2 size={16} />
-            Clear workspace
+            清空工作区
           </button>
           <label className="dropzone">
             <input
@@ -211,7 +231,7 @@ function App() {
               onChange={(event) => handleFiles(event.target.files)}
             />
             <FileText size={28} />
-            <span>Upload PDF, TXT, or Markdown</span>
+            <span>上传 PDF、TXT 或 Markdown 文件</span>
           </label>
 
           <div className="doc-list">
@@ -239,7 +259,7 @@ function App() {
         <section className="panel command-panel">
           <div className="panel-title">
             <Activity size={18} />
-            <h2>Confidential Review</h2>
+            <h2>保密审查</h2>
           </div>
           <textarea
             value={question}
@@ -248,7 +268,7 @@ function App() {
           />
           <button type="button" onClick={analyze} disabled={isAnalyzing}>
             <Play size={17} />
-            {isAnalyzing ? 'Analyzing...' : 'Run local review'}
+            {isAnalyzing ? '正在分析...' : '运行本地审查'}
           </button>
           <p className="status">{status}</p>
           {error && (
@@ -266,22 +286,50 @@ function App() {
         <aside className="panel evidence-panel">
           <div className="panel-title">
             <Gauge size={18} />
-            <h2>Evidence</h2>
+            <h2>证据</h2>
           </div>
 
           {result ? (
             <>
               <div className="log-grid">
-                <Metric label="TTFT" value={`${result.log.ttft_ms} ms`} />
-                <Metric label="TPS" value={result.log.tokens_per_second.toString()} />
-                <Metric label="Total" value={`${result.log.total_inference_ms} ms`} />
-                <Metric label="Model load" value={`${result.log.model_load_ms} ms`} />
+                <Metric label="首 token 延迟" value={`${result.log.ttft_ms} ms`} />
+                <Metric
+                  label="生成速度 TPS"
+                  value={result.log.tokens_per_second.toString()}
+                />
+                <Metric label="总耗时" value={`${result.log.total_inference_ms} ms`} />
+                <Metric label="模型加载" value={`${result.log.model_load_ms} ms`} />
               </div>
               <div className="audit">
                 <CheckCircle2 size={17} />
-                <span>Latest log exported to evidence/logs/latest-demo-run.json</span>
+                <span>最新日志已导出到 evidence/logs/latest-demo-run.json</span>
               </div>
-              <h3>Citations</h3>
+              <div className="evidence-meta">
+                <EvidenceItem label="QVAC SDK" value={result.log.qvac_sdk_version} />
+                <EvidenceItem label="分析模式" value={result.log.analysis_mode} />
+                <EvidenceItem
+                  label="文档 SHA-256"
+                  value={shortHash(result.log.document_hashes?.[0]?.sha256)}
+                />
+                <EvidenceItem
+                  label="Prompt SHA-256"
+                  value={shortHash(result.log.system_prompt_hash)}
+                />
+                <EvidenceItem
+                  label="分片 / 检索"
+                  value={`${result.log.chunk_count ?? 0} / ${
+                    result.log.retrieved_chunks?.length ??
+                    result.log.selected_chunks.length
+                  }`}
+                />
+                <EvidenceItem
+                  label="缺失条款 / 关键指标"
+                  value={`${result.log.missing_clause_count ?? 0} / ${
+                    result.log.key_metric_count ?? 0
+                  }`}
+                />
+              </div>
+              <h3>引用证据</h3>
               <div className="citation-list">
                 {result.citations.map((citation) => (
                   <article key={citation.chunkId} className="citation">
@@ -294,8 +342,7 @@ function App() {
             </>
           ) : (
             <p className="empty">
-              Run a review to generate citations, device metadata, and an
-              auditable performance log.
+              运行审查后将生成引用、设备元数据和可审计性能日志。
             </p>
           )}
         </aside>
@@ -321,6 +368,21 @@ function Metric({
   )
 }
 
+function EvidenceItem({
+  label,
+  value,
+}: {
+  label: string
+  value?: string | number
+}) {
+  return (
+    <div className="evidence-item">
+      <span>{label}</span>
+      <strong>{value || '未记录'}</strong>
+    </div>
+  )
+}
+
 function ContractReviewPanel({ result }: { result: AnalysisResult }) {
   const review = result.contractReview ?? {
     keyMetrics: [],
@@ -342,11 +404,11 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
     <div className="output review-output">
       <section className="review-hero">
         <div>
-          <h3>Contract Overview</h3>
+          <h3>合同概述</h3>
           <p>{cleanDisplayText(result.summary, 'summary')}</p>
         </div>
         <div className="review-score">
-          <span>Missing clauses</span>
+          <span>缺失条款</span>
           <strong>{missingClauses.length}</strong>
         </div>
       </section>
@@ -354,7 +416,7 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
       <section>
         <div className="section-heading">
           <ListChecks size={17} />
-          <h3>Key Metrics</h3>
+          <h3>关键指标</h3>
         </div>
         <div className="metric-list">
           {keyMetrics.map((metric) => (
@@ -364,20 +426,20 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
               <p>{metric.evidence}</p>
             </article>
           ))}
-          {!keyMetrics.length && <p>No key numeric terms were extracted.</p>}
+          {!keyMetrics.length && <p>未提取到关键数值条款。</p>}
         </div>
       </section>
 
       <section>
         <div className="section-heading">
           <ShieldAlert size={17} />
-          <h3>Missing Clauses</h3>
+          <h3>缺失条款</h3>
         </div>
         <div className="finding-list">
           {missingClauses.map((finding) => (
             <article key={finding.title} className="finding-card high">
               <div>
-                <span className="severity">High</span>
+                <span className="severity">高风险</span>
                 <h4>{finding.title}</h4>
               </div>
               <p>{finding.risk}</p>
@@ -387,10 +449,10 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
           {!missingClauses.length && (
             <article className="finding-card clean">
               <div>
-                <span className="severity">Clear</span>
-                <h4>No explicit missing-clause marker found</h4>
+                <span className="severity">通过</span>
+                <h4>未发现明确缺失条款标记</h4>
               </div>
-              <p>The local deterministic review did not detect the demo missing-clause patterns.</p>
+              <p>本地确定性审查未检测到预设的缺失条款模式。</p>
             </article>
           )}
         </div>
@@ -400,7 +462,7 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
         <div>
           <div className="section-heading">
             <ShieldCheck size={17} />
-            <h3>Risk Register</h3>
+            <h3>风险登记</h3>
           </div>
           <ul className="compact-list">
             {risks.map((item) => (
@@ -411,7 +473,7 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
         <div>
           <div className="section-heading">
             <CheckCircle2 size={17} />
-            <h3>Action Plan</h3>
+            <h3>行动计划</h3>
           </div>
           <ul className="compact-list">
             {actionItems.map((item) => (
@@ -422,7 +484,7 @@ function ContractReviewPanel({ result }: { result: AnalysisResult }) {
       </section>
 
       <section>
-        <h3>QVAC Local Analysis</h3>
+        <h3>QVAC 本地分析</h3>
         <p>{cleanDisplayText(result.answer, 'answer')}</p>
       </section>
     </div>
@@ -464,6 +526,11 @@ function extractJsonLikeField(text: string, key: string) {
     new RegExp(`${escapedKey}\\s*[:\uFF1A]\\s*([^\\n{]+)`, 'iu'),
   )
   return bare?.[1]?.trim() ?? ''
+}
+
+function shortHash(value?: string) {
+  if (!value) return ''
+  return `${value.slice(0, 10)}...${value.slice(-8)}`
 }
 
 export default App

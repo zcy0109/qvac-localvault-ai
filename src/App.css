@@ -395,6 +395,45 @@ ul {
   padding: 10px;
 }
 
+.evidence-meta {
+  border: 1px solid #e6e9e7;
+  border-radius: 8px;
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.evidence-item {
+  background: #ffffff;
+  border-bottom: 1px solid #e6e9e7;
+  border-right: 1px solid #e6e9e7;
+  min-width: 0;
+  padding: 10px;
+}
+
+.evidence-item:nth-child(2n) {
+  border-right: 0;
+}
+
+.evidence-item:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.evidence-item span {
+  color: #69717f;
+  display: block;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.evidence-item strong {
+  display: block;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
 .citation {
   border-left: 3px solid #2f6f63;
   background: #f8faf9;

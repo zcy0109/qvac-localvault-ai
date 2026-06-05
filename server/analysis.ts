@@ -1,9 +1,10 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import crypto from 'node:crypto'
 import { reviewContractLocally } from './contract-review.js'
 import { chunkDocuments, retrieveChunks } from './rag.js'
 import { runCompletion } from './inference.js'
-import type { AnalysisResult, DocumentInput } from './types.js'
+import type { AnalysisResult, DocumentInput, InferenceLog } from './types.js'
 
 export async function analyzeDocuments(input: {
   documents: DocumentInput[]
@@ -29,6 +30,15 @@ export async function analyzeDocuments(input: {
 
   const parsed = parseStructuredCompletion(stripThinking(completion.text))
   const merged = mergeContractSignals(parsed, contractSignals)
+  const log = await enrichEvidenceLog({
+    log: completion.log,
+    prompt,
+    cleanDocuments,
+    chunks,
+    selectedChunks,
+    missingClauseCount: contractSignals.missingClauses.length,
+    keyMetricCount: contractSignals.keyMetrics.length,
+  })
   const citations = selectedChunks.slice(0, 6).map((chunk) => ({
     chunkId: chunk.id,
     documentName: chunk.documentName,
@@ -47,7 +57,7 @@ export async function analyzeDocuments(input: {
       actionItems: merged.actionItems,
     },
     chunks: selectedChunks,
-    log: completion.log,
+    log,
   }
 
   await persistEvidence(result)
@@ -258,4 +268,54 @@ async function persistEvidence(result: AnalysisResult) {
     path.join(evidenceDir, 'logs', 'latest-demo-run.json'),
     `${JSON.stringify(result.log, null, 2)}\n`,
   )
+}
+
+async function enrichEvidenceLog(input: {
+  log: InferenceLog
+  prompt: string
+  cleanDocuments: DocumentInput[]
+  chunks: ReturnType<typeof chunkDocuments>
+  selectedChunks: ReturnType<typeof retrieveChunks>
+  missingClauseCount: number
+  keyMetricCount: number
+}): Promise<InferenceLog> {
+  return {
+    ...input.log,
+    analysis_mode: 'hybrid-deterministic-contract-review',
+    qvac_sdk_version: await readQvacSdkVersion(),
+    system_prompt_hash: sha256(input.prompt),
+    document_count: input.cleanDocuments.length,
+    input_file_names: input.cleanDocuments.map((document) => document.name),
+    document_hashes: input.cleanDocuments.map((document) => ({
+      name: document.name,
+      sha256: sha256(document.text),
+      chars: document.text.length,
+    })),
+    chunk_count: input.chunks.length,
+    retrieved_chunks: input.selectedChunks.map((chunk) => ({
+      id: chunk.id,
+      documentName: chunk.documentName,
+      index: chunk.index,
+      score: chunk.score,
+    })),
+    missing_clause_count: input.missingClauseCount,
+    key_metric_count: input.keyMetricCount,
+  }
+}
+
+async function readQvacSdkVersion() {
+  try {
+    const packageJson = await fs.readFile(
+      path.resolve('node_modules', '@qvac', 'sdk', 'package.json'),
+      'utf8',
+    )
+    const parsed = JSON.parse(packageJson) as { version?: string }
+    return parsed.version ?? 'unknown'
+  } catch {
+    return 'unknown'
+  }
+}
+
+function sha256(value: string) {
+  return crypto.createHash('sha256').update(value).digest('hex')
 }
