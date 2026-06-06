@@ -485,8 +485,10 @@ function AuditEvidencePack({ result }: { result: AnalysisResult }) {
       </div>
       <div className="pack-paths">
         <span>Reproduce: npm run validate:demo</span>
+                <span>Robustness: npm run validate:robustness</span>
                 <span>Log: evidence/logs/latest-demo-run.json</span>
                 <span>Report: evidence/logs/validation-report.json</span>
+                <span>Robustness report: evidence/logs/robustness-report.json</span>
                 <span>Review report: evidence/logs/review-report.json</span>
               </div>
             </section>

@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import multer from 'multer'
 import crypto from 'node:crypto'
-import { analyzeDocuments } from './analysis.js'
+import { InputValidationError, analyzeDocuments } from './analysis.js'
 import { getDeviceInfo } from './device.js'
 import type { DocumentInput } from './types.js'
 
@@ -68,7 +68,7 @@ app.post('/api/analyze', async (request, response) => {
   try {
     response.json(await analyzeDocuments({ documents, question }))
   } catch (error) {
-    response.status(500).json({
+    response.status(error instanceof InputValidationError ? 400 : 500).json({
       error: error instanceof Error ? error.message : 'Analysis failed.',
     })
   }

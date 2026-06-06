@@ -21,6 +21,16 @@ export async function analyzeDocuments(input: {
   const cleanDocuments = input.documents.filter((document) =>
     document.text.trim(),
   )
+  if (!cleanDocuments.length) {
+    throw new InputValidationError(
+      'No readable local text was found. Upload a non-empty PDF, TXT, or Markdown file.',
+    )
+  }
+  if (!looksLikeConfidentialVendorContract(cleanDocuments)) {
+    throw new InputValidationError(
+      'No confidential vendor contract signals were detected. Upload a contract or policy document with parties, confidentiality, vendor, security, or service terms.',
+    )
+  }
   const contractSignals = reviewContractLocally(cleanDocuments)
   const chunks = chunkDocuments(cleanDocuments)
   const signalsWithEvidence = attachEvidenceReferences(contractSignals, chunks)
@@ -77,6 +87,51 @@ export async function analyzeDocuments(input: {
   await persistEvidence(result)
 
   return result
+}
+
+export class InputValidationError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'InputValidationError'
+  }
+}
+
+function looksLikeConfidentialVendorContract(documents: DocumentInput[]) {
+  const text = documents
+    .map((document) => document.text)
+    .join('\n')
+    .toLowerCase()
+
+  const contractMarkers = [
+    'contract',
+    'agreement',
+    '协议',
+    '合同',
+    'service terms',
+  ]
+  const partyMarkers = ['party a', 'party b', '甲方', '乙方', 'vendor', '供应商']
+  const reviewMarkers = [
+    'confidential',
+    '保密',
+    'audit',
+    '审计',
+    'breach',
+    'security',
+    '安全',
+    'data',
+    '数据',
+    'sla',
+  ]
+
+  return (
+    hasAny(text, contractMarkers) &&
+    hasAny(text, partyMarkers) &&
+    hasAny(text, reviewMarkers)
+  )
+}
+
+function hasAny(text: string, markers: string[]) {
+  return markers.some((marker) => text.includes(marker))
 }
 
 function buildPrompt(

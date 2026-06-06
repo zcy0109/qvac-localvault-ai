@@ -11,6 +11,7 @@
     "server:once": "tsx server/index.ts",
     "qvac:smoke": "tsx server/qvac-smoke.ts",
     "validate:demo": "tsx server/validate-demo.ts",
+    "validate:robustness": "tsx server/validate-robustness.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

@@ -19,10 +19,13 @@ LocalVault AI is a local-first confidential contract intelligence workspace for 
 - Deterministic detection of contract key metrics and missing clauses.
 - Evidence-bound findings that link metrics and risks to local document chunks.
 - Suggested amendment drafts for missing clauses.
+- Scope guardrails for empty files and non-contract documents.
+- Prompt-injection robustness validation for untrusted document content.
 - Audit Evidence Pack showing QVAC provider, zero remote AI calls, hashes, hardware, and reproduction paths.
 - Exported reports:
   - `evidence/logs/latest-demo-run.json`
   - `evidence/logs/validation-report.json`
+  - `evidence/logs/robustness-report.json`
   - `evidence/logs/review-report.json`
 
 ## QVAC Integration
@@ -61,6 +64,7 @@ http://127.0.0.1:5173
 $env:LOCALVAULT_PROVIDER='qvac'
 $env:LOCALVAULT_REQUIRE_QVAC='true'
 npm run validate:demo
+npm run validate:robustness
 ```
 
 The validation set checks three local contracts:
@@ -82,6 +86,14 @@ The report must show:
 - all Policy Matrix rows have evidence chunks
 - document SHA-256 and prompt SHA-256 recorded
 
+The robustness report checks:
+
+| Document | Expected Behavior |
+| --- | --- |
+| `vendor-contract-prompt-injection.md` | embedded instruction is ignored; missing clause count remains 5 |
+| `unrelated-meeting-notes.md` | rejected as outside the confidential vendor contract scope |
+| `empty-contract.md` | rejected before inference because no readable local text exists |
+
 ## Evidence Directory
 
 ```text
@@ -94,11 +106,15 @@ evidence/
   logs/
     latest-demo-run.json
     validation-report.json
+    robustness-report.json
     review-report.json
   sample-documents/
     vendor-contract-risky.md
     vendor-contract-partial.md
     vendor-contract-complete.md
+    vendor-contract-prompt-injection.md
+    unrelated-meeting-notes.md
+    empty-contract.md
   hardware-screenshots/
 ```
 
@@ -113,6 +129,7 @@ evidence/
 7. Export or open `review-report.json`.
 8. Show `remote_api_calls: []` and zero-cloud evidence.
 9. Run `npm run validate:demo`.
+10. Run `npm run validate:robustness` to show prompt-injection and invalid-input defense.
 
 ## License
 

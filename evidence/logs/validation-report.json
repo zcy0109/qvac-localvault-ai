@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "timestamp": "2026-06-06T15:55:48.914Z",
+  "timestamp": "2026-06-06T17:32:37.639Z",
   "samples": [
     {
       "file": "evidence\\sample-documents\\vendor-contract-risky.md",
@@ -81,12 +81,12 @@
         "citation_count": 4,
         "policy_pack_id": "vendor-contract-confidentiality-v1",
         "policy_pack_version": "2026.06",
-        "generation_ttft_ms": 4775,
-        "generation_ms": 8429,
-        "model_load_ms": 4412,
-        "total_inference_ms": 12841,
-        "tokens_per_second": 60.86,
-        "end_to_end_tokens_per_second": 39.95,
+        "generation_ttft_ms": 1024,
+        "generation_ms": 5194,
+        "model_load_ms": 7093,
+        "total_inference_ms": 12287,
+        "tokens_per_second": 94.72,
+        "end_to_end_tokens_per_second": 40.04,
         "document_hash": "465cefc3568ba0dd2fead88e3315a7c32e842a9d0ea4cdc6721541cbed5fb91d",
         "prompt_hash": "ad0ac17099f4f2cf1ffbad45c313b8970a75dbd9f61658bbe17d62249ff5125c"
       }
@@ -170,12 +170,12 @@
         "citation_count": 4,
         "policy_pack_id": "vendor-contract-confidentiality-v1",
         "policy_pack_version": "2026.06",
-        "generation_ttft_ms": 761,
-        "generation_ms": 3330,
+        "generation_ttft_ms": 770,
+        "generation_ms": 3463,
         "model_load_ms": 0,
-        "total_inference_ms": 3330,
-        "tokens_per_second": 145.95,
-        "end_to_end_tokens_per_second": 145.95,
+        "total_inference_ms": 3463,
+        "tokens_per_second": 144.67,
+        "end_to_end_tokens_per_second": 144.67,
         "document_hash": "99a8f9317d0cd4466a334b4ea77ffe01bf4bad5dee65097da8d93424247acb2b",
         "prompt_hash": "c93dce2d15917bbbdd9fec50f1d4b2d13a6a416811860720a233ad0d1a982a4f"
       }
@@ -259,12 +259,12 @@
         "citation_count": 6,
         "policy_pack_id": "vendor-contract-confidentiality-v1",
         "policy_pack_version": "2026.06",
-        "generation_ttft_ms": 866,
-        "generation_ms": 3555,
+        "generation_ttft_ms": 1644,
+        "generation_ms": 6132,
         "model_load_ms": 0,
-        "total_inference_ms": 3555,
-        "tokens_per_second": 124.61,
-        "end_to_end_tokens_per_second": 124.61,
+        "total_inference_ms": 6132,
+        "tokens_per_second": 81.7,
+        "end_to_end_tokens_per_second": 81.7,
         "document_hash": "f7a865220963d52ebec3c23f21b6aa800a20129ea2e693fced61fc30361daf82",
         "prompt_hash": "6f8c2440aaa916cda57e39e220c9b7a2aa0937cf65c7449c3a8139334b79a20b"
       }
