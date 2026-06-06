@@ -284,9 +284,32 @@ function evidenceChunks(
 
 function findEvidenceChunk(evidence: string, chunks: SourceChunk[]) {
   const normalizedEvidence = normalizeForEvidence(evidence)
-  return chunks.find((chunk) =>
+  const exactMatch = chunks.find((chunk) =>
     normalizeForEvidence(chunk.text).includes(normalizedEvidence),
   )
+  if (exactMatch) return exactMatch
+
+  const evidenceTerms = meaningfulTerms(evidence)
+  if (!evidenceTerms.size) return undefined
+
+  const scored = chunks
+    .map((chunk) => {
+      const chunkTerms = meaningfulTerms(chunk.text)
+      const matches = Array.from(evidenceTerms).filter((term) =>
+        chunkTerms.has(term),
+      ).length
+      return {
+        chunk,
+        matches,
+        ratio: matches / evidenceTerms.size,
+      }
+    })
+    .sort((a, b) => b.matches - a.matches || b.ratio - a.ratio)
+
+  const best = scored[0]
+  if (!best || best.matches < 4 || best.ratio < 0.35) return undefined
+
+  return best.chunk
 }
 
 function uniqueChunks(chunks: SourceChunk[]) {
@@ -300,6 +323,43 @@ function uniqueChunks(chunks: SourceChunk[]) {
 
 function normalizeForEvidence(value: string) {
   return value.toLowerCase().replace(/\s+/gu, ' ').trim()
+}
+
+function meaningfulTerms(value: string) {
+  const stopWords = new Set([
+    'the',
+    'and',
+    'for',
+    'with',
+    'that',
+    'this',
+    'from',
+    'into',
+    'shall',
+    'party',
+    'upon',
+    'must',
+    'any',
+    'all',
+    'are',
+    'may',
+    'not',
+    'its',
+    'per',
+    'than',
+    'after',
+    'before',
+    'during',
+    'under',
+  ])
+
+  return new Set(
+    value
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+      .split(/\s+/u)
+      .filter((term) => term.length > 2 && !stopWords.has(term)),
+  )
 }
 
 function uniqueStrings(values: string[]) {

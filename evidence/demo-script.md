@@ -2,64 +2,92 @@
 
 Target length: under 5 minutes.
 
-## 0:00 - 0:30 Problem
+## 0:00 - 0:25 Problem
 
-Sensitive documents such as contracts, research notes, and internal policies should not be uploaded to cloud AI APIs just to get a useful summary or review.
+Confidential vendor contracts often contain customer PII, internal security requirements, pricing terms, and operational risk. Uploading them to a cloud AI API can create privacy and compliance exposure.
 
-LocalVault AI runs a confidential document intelligence workflow locally on consumer hardware with QVAC SDK.
+LocalVault AI reviews these documents locally on consumer hardware with QVAC SDK.
 
-## 0:30 - 1:00 Hardware And QVAC
+## 0:25 - 0:55 Hardware And QVAC
 
-Show the laptop hardware:
+Show the laptop hardware screenshots:
 
 - Intel Core i5-11400H
 - 16 GB RAM
 - NVIDIA RTX 3050 Ti Laptop GPU
 - Windows
 
-Show the app metric:
+Then show the app evidence panel:
 
 - Provider: `qvac`
+- Model: `QWEN3_600M_INST_Q4`
 - Remote AI calls: `0`
+- Device: `12 threads / 15.71 GB RAM`
 
-## 1:00 - 2:00 Local Document Review
+## 0:55 - 2:00 High-Risk Contract Review
 
-Upload `sample-confidential-review.md`.
+Upload `evidence/sample-documents/vendor-contract-risky.md`.
 
-Run the default confidential review prompt:
+Run the default review prompt:
 
 ```text
-Summarize the files, identify risks, extract missing information, and create an action list.
+Review the uploaded confidential vendor contract. Summarize core obligations, identify legal and security risks, extract missing clauses or missing information, and create an action list.
 ```
-
-## 2:00 - 3:20 Results
 
 Show:
 
-- Summary
-- Answer
-- Risks
-- Action items
-- Source citations
+- Missing clauses: `5`
+- Key metrics: `9`
+- Incident response SLA P1-P4
+- Audit log retention
+- Liquidated damages
+- Confidentiality survival period
+- Local-only data processing
 
-Explain that citations are local chunks selected from uploaded documents.
+## 2:00 - 2:50 Evidence-Bound Findings
 
-## 3:20 - 4:20 Evidence
+Scroll to the missing clauses section.
 
-Show the evidence panel:
+Show the five high-risk missing clauses:
 
-- TTFT
-- TPS
-- Total inference time
-- Model load time
+- Missing data breach notification deadline
+- Missing Party A audit right
+- Missing force majeure liability allocation
+- Missing intellectual property ownership
+- Missing regular security reporting requirement
 
-Open `evidence/logs/latest-demo-run.json` and point out:
+For two findings, click the evidence chunk button and show the right-side citation panel. Explain that every conclusion is bound to a local document chunk, not a cloud response.
 
+## 2:50 - 3:35 Amendment Drafts
+
+Show the Suggested amendment sections. Explain that the app does not only flag risk; it drafts concrete replacement clauses that a legal or security reviewer can edit.
+
+## 3:35 - 4:20 Robustness Check
+
+Briefly mention the automated validation set:
+
+- `vendor-contract-risky.md`: expected missing clauses `5`
+- `vendor-contract-partial.md`: expected missing clauses `3`
+- `vendor-contract-complete.md`: expected missing clauses `0`
+
+Run or show `npm run validate:demo` and open `evidence/logs/validation-report.json`.
+
+Point out:
+
+- `ok: true`
 - `provider: qvac`
-- `model: QWEN3_600M_INST_Q4`
 - `remote_api_calls: []`
-- hardware metadata
+- document SHA-256 hashes
+- prompt SHA-256 hashes
+- QVAC SDK version
+- performance metrics
 
-## 4:20 - 5:00 Close
+## 4:20 - 5:00 Zero-Cloud Close
 
-LocalVault AI demonstrates a practical local-first AI workflow for confidential documents on general purpose consumer devices, using QVAC SDK for local inference and auditable evidence.
+Show `evidence/api-disclosure.json`.
+
+If available, show Windows Resource Monitor or Task Manager network screenshot from the disconnected or zero-cloud run.
+
+Close with:
+
+LocalVault AI demonstrates a production-shaped local-first document intelligence workflow: QVAC local inference, deterministic contract checks, citation-bound evidence, amendment drafts, and reproducible validation on a general purpose consumer device.

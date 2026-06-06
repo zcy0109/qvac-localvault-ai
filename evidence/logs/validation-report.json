@@ -1,65 +1,215 @@
 {
   "ok": true,
-  "timestamp": "2026-06-06T08:04:25.552Z",
-  "sample": "evidence\\sample-documents\\confidential-vendor-contract.md",
-  "checks": [
+  "timestamp": "2026-06-06T09:01:17.927Z",
+  "samples": [
     {
-      "name": "provider is qvac",
-      "ok": true
+      "file": "evidence\\sample-documents\\vendor-contract-risky.md",
+      "purpose": "high-risk contract with all target missing clauses",
+      "ok": true,
+      "checks": [
+        {
+          "name": "provider is qvac",
+          "ok": true
+        },
+        {
+          "name": "no remote AI calls",
+          "ok": true
+        },
+        {
+          "name": "missing clause count is 5",
+          "ok": true
+        },
+        {
+          "name": "key metric count is 9",
+          "ok": true
+        },
+        {
+          "name": "all missing clauses have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "all missing clauses have amendment drafts",
+          "ok": true
+        },
+        {
+          "name": "all key metrics have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "public analysis note has no hidden reasoning leak",
+          "ok": true
+        },
+        {
+          "name": "document hash recorded",
+          "ok": true
+        },
+        {
+          "name": "prompt hash recorded",
+          "ok": true
+        }
+      ],
+      "expected": {
+        "missing_clause_count": 5,
+        "key_metric_count": 9
+      },
+      "actual": {
+        "provider": "qvac",
+        "model": "QWEN3_600M_INST_Q4",
+        "qvac_sdk_version": "0.10.2",
+        "remote_api_calls": [],
+        "missing_clause_count": 5,
+        "amendment_draft_count": 5,
+        "key_metric_count": 9,
+        "citation_count": 4,
+        "generation_ttft_ms": 4218,
+        "generation_ms": 7683,
+        "model_load_ms": 5901,
+        "total_inference_ms": 13584,
+        "tokens_per_second": 67.55,
+        "end_to_end_tokens_per_second": 38.21,
+        "document_hash": "465cefc3568ba0dd2fead88e3315a7c32e842a9d0ea4cdc6721541cbed5fb91d",
+        "prompt_hash": "ad0ac17099f4f2cf1ffbad45c313b8970a75dbd9f61658bbe17d62249ff5125c"
+      }
     },
     {
-      "name": "no remote AI calls",
-      "ok": true
+      "file": "evidence\\sample-documents\\vendor-contract-partial.md",
+      "purpose": "partially compliant contract with breach notification and audit rights present",
+      "ok": true,
+      "checks": [
+        {
+          "name": "provider is qvac",
+          "ok": true
+        },
+        {
+          "name": "no remote AI calls",
+          "ok": true
+        },
+        {
+          "name": "missing clause count is 3",
+          "ok": true
+        },
+        {
+          "name": "key metric count is 9",
+          "ok": true
+        },
+        {
+          "name": "all missing clauses have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "all missing clauses have amendment drafts",
+          "ok": true
+        },
+        {
+          "name": "all key metrics have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "public analysis note has no hidden reasoning leak",
+          "ok": true
+        },
+        {
+          "name": "document hash recorded",
+          "ok": true
+        },
+        {
+          "name": "prompt hash recorded",
+          "ok": true
+        }
+      ],
+      "expected": {
+        "missing_clause_count": 3,
+        "key_metric_count": 9
+      },
+      "actual": {
+        "provider": "qvac",
+        "model": "QWEN3_600M_INST_Q4",
+        "qvac_sdk_version": "0.10.2",
+        "remote_api_calls": [],
+        "missing_clause_count": 3,
+        "amendment_draft_count": 3,
+        "key_metric_count": 9,
+        "citation_count": 4,
+        "generation_ttft_ms": 767,
+        "generation_ms": 3246,
+        "model_load_ms": 0,
+        "total_inference_ms": 3246,
+        "tokens_per_second": 145.41,
+        "end_to_end_tokens_per_second": 145.41,
+        "document_hash": "99a8f9317d0cd4466a334b4ea77ffe01bf4bad5dee65097da8d93424247acb2b",
+        "prompt_hash": "c93dce2d15917bbbdd9fec50f1d4b2d13a6a416811860720a233ad0d1a982a4f"
+      }
     },
     {
-      "name": "five missing clauses detected",
-      "ok": true
-    },
-    {
-      "name": "nine key metrics detected",
-      "ok": true
-    },
-    {
-      "name": "all missing clauses have evidence chunks",
-      "ok": true
-    },
-    {
-      "name": "all missing clauses have amendment drafts",
-      "ok": true
-    },
-    {
-      "name": "all key metrics have evidence chunks",
-      "ok": true
-    },
-    {
-      "name": "public analysis note has no hidden reasoning leak",
-      "ok": true
-    },
-    {
-      "name": "document hash recorded",
-      "ok": true
-    },
-    {
-      "name": "prompt hash recorded",
-      "ok": true
+      "file": "evidence\\sample-documents\\vendor-contract-complete.md",
+      "purpose": "complete contract used to check false positives",
+      "ok": true,
+      "checks": [
+        {
+          "name": "provider is qvac",
+          "ok": true
+        },
+        {
+          "name": "no remote AI calls",
+          "ok": true
+        },
+        {
+          "name": "missing clause count is 0",
+          "ok": true
+        },
+        {
+          "name": "key metric count is 9",
+          "ok": true
+        },
+        {
+          "name": "all missing clauses have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "all missing clauses have amendment drafts",
+          "ok": true
+        },
+        {
+          "name": "all key metrics have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "public analysis note has no hidden reasoning leak",
+          "ok": true
+        },
+        {
+          "name": "document hash recorded",
+          "ok": true
+        },
+        {
+          "name": "prompt hash recorded",
+          "ok": true
+        }
+      ],
+      "expected": {
+        "missing_clause_count": 0,
+        "key_metric_count": 9
+      },
+      "actual": {
+        "provider": "qvac",
+        "model": "QWEN3_600M_INST_Q4",
+        "qvac_sdk_version": "0.10.2",
+        "remote_api_calls": [],
+        "missing_clause_count": 0,
+        "amendment_draft_count": 0,
+        "key_metric_count": 9,
+        "citation_count": 6,
+        "generation_ttft_ms": 874,
+        "generation_ms": 3561,
+        "model_load_ms": 0,
+        "total_inference_ms": 3561,
+        "tokens_per_second": 131.42,
+        "end_to_end_tokens_per_second": 131.42,
+        "document_hash": "f7a865220963d52ebec3c23f21b6aa800a20129ea2e693fced61fc30361daf82",
+        "prompt_hash": "6f8c2440aaa916cda57e39e220c9b7a2aa0937cf65c7449c3a8139334b79a20b"
+      }
     }
   ],
-  "metrics": {
-    "provider": "qvac",
-    "model": "QWEN3_600M_INST_Q4",
-    "qvac_sdk_version": "0.10.2",
-    "remote_api_calls": [],
-    "missing_clause_count": 5,
-    "amendment_draft_count": 5,
-    "key_metric_count": 9,
-    "citation_count": 6,
-    "generation_ttft_ms": 4757,
-    "generation_ms": 8644,
-    "model_load_ms": 23910,
-    "total_inference_ms": 32554,
-    "tokens_per_second": 63.4,
-    "end_to_end_tokens_per_second": 16.83
-  },
   "evidence": {
     "latest_demo_run": "evidence/logs/latest-demo-run.json",
     "validation_report": "evidence/logs/validation-report.json",
