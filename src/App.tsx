@@ -421,10 +421,12 @@ function EvidenceItem({
   label: string
   value?: string | number
 }) {
+  const displayValue = value === undefined || value === null || value === '' ? '未记录' : value
+
   return (
     <div className="evidence-item">
       <span>{label}</span>
-      <strong>{value || '未记录'}</strong>
+      <strong>{displayValue}</strong>
     </div>
   )
 }
@@ -585,9 +587,9 @@ function ContractReviewPanel({
             <article className="finding-card clean">
               <div>
                 <span className="severity">通过</span>
-                <h4>未发现明确缺失条款标记</h4>
+                <h4>未检测到预设缺失条款</h4>
               </div>
-              <p>本地确定性审查未检测到预设的缺失条款模式。</p>
+              <p>本地确定性审查未发现需要补充的预设缺失条款。</p>
             </article>
           )}
         </div>
