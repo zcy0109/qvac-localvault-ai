@@ -26,6 +26,7 @@ npm run validate:demo
 - `missing_clause_count: 5`
 - `key_metric_count: 9`
 - 所有缺失条款和关键指标都有 `evidenceChunkId`
+- 所有缺失条款都有可交付的 `amendmentDraft`
 
 ## 录制演示前检查
 
@@ -34,7 +35,9 @@ npm run validate:demo
 3. 使用 QVAC 模式启动应用。
 4. 上传 `sample-documents/confidential-vendor-contract.md`。
 5. 运行本地审查并确认右侧证据面板显示远程 AI 调用为 0。
-6. 点击至少两个“证据分片”按钮，展示结论和引用之间的绑定。
-7. 运行 `npm run validate:demo` 并保存生成的验证报告。
+6. 展示每个缺失条款下方的 Suggested amendment，说明审查结果可以直接转化为合同修订草案。
+7. 点击至少两个“证据分片”按钮，展示结论和引用之间的绑定。
+8. 展示 Audit Evidence Pack，说明 QVAC、本地硬件、零远程调用和复现命令。
+9. 运行 `npm run validate:demo` 并保存生成的验证报告。
 
 最终提交给 DoraHacks 的日志必须来自真实 QVAC provider，不能使用开发阶段的 mock provider。

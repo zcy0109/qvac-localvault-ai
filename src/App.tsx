@@ -46,6 +46,7 @@ type AnalysisResult = {
       evidenceAnchor?: string
       risk: string
       action: string
+      amendmentDraft: string
       evidenceChunkId?: string
       evidenceDocumentName?: string
       evidenceChunkIndex?: number
@@ -330,6 +331,7 @@ function App() {
                 <CheckCircle2 size={17} />
                 <span>最新日志已导出到 evidence/logs/latest-demo-run.json</span>
               </div>
+              <AuditEvidencePack result={result} />
               <div className="evidence-meta">
                 <EvidenceItem label="QVAC SDK" value={result.log.qvac_sdk_version} />
                 <EvidenceItem label="分析模式" value={result.log.analysis_mode} />
@@ -427,6 +429,49 @@ function EvidenceItem({
   )
 }
 
+function AuditEvidencePack({ result }: { result: AnalysisResult }) {
+  const validationPass =
+    result.log.provider === 'qvac' &&
+    result.log.remote_api_calls.length === 0 &&
+    Boolean(result.log.document_hashes?.[0]?.sha256) &&
+    Boolean(result.log.system_prompt_hash)
+  const device = result.log.device_info
+
+  return (
+    <section className="evidence-pack">
+      <div className="section-heading">
+        <ShieldCheck size={17} />
+        <h3>Audit Evidence Pack</h3>
+      </div>
+      <div className={validationPass ? 'pack-status pass' : 'pack-status warn'}>
+        <CheckCircle2 size={16} />
+        <strong>{validationPass ? 'Validation ready' : 'Needs review'}</strong>
+        <span>
+          QVAC local inference, zero remote AI calls, hashes and hardware metadata
+          recorded.
+        </span>
+      </div>
+      <div className="pack-grid">
+        <EvidenceItem label="Provider" value={result.log.provider} />
+        <EvidenceItem
+          label="Remote AI calls"
+          value={result.log.remote_api_calls.length}
+        />
+        <EvidenceItem label="Model" value={result.log.model} />
+        <EvidenceItem
+          label="Device"
+          value={`${device.cpu_count} threads / ${device.total_ram_gb} GB RAM`}
+        />
+      </div>
+      <div className="pack-paths">
+        <span>Reproduce: npm run validate:demo</span>
+        <span>Log: evidence/logs/latest-demo-run.json</span>
+        <span>Report: evidence/logs/validation-report.json</span>
+      </div>
+    </section>
+  )
+}
+
 function ContractReviewPanel({
   activeCitationId,
   result,
@@ -519,6 +564,12 @@ function ContractReviewPanel({
               </div>
               <p>{finding.risk}</p>
               <blockquote>{finding.evidence}</blockquote>
+              {finding.amendmentDraft && (
+                <div className="amendment-draft">
+                  <span>Suggested amendment</span>
+                  <p>{finding.amendmentDraft}</p>
+                </div>
+              )}
               {finding.evidenceChunkId && (
                 <button
                   type="button"

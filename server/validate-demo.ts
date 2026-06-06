@@ -32,6 +32,12 @@ const checks = [
     result.contractReview.missingClauses.every((finding) => finding.evidenceChunkId),
   ),
   check(
+    'all missing clauses have amendment drafts',
+    result.contractReview.missingClauses.every((finding) =>
+      Boolean(finding.amendmentDraft?.trim()),
+    ),
+  ),
+  check(
     'all key metrics have evidence chunks',
     result.contractReview.keyMetrics.every((metric) => metric.evidenceChunkId),
   ),
@@ -54,6 +60,9 @@ const report = {
     qvac_sdk_version: result.log.qvac_sdk_version,
     remote_api_calls: result.log.remote_api_calls,
     missing_clause_count: result.contractReview.missingClauses.length,
+    amendment_draft_count: result.contractReview.missingClauses.filter((finding) =>
+      Boolean(finding.amendmentDraft?.trim()),
+    ).length,
     key_metric_count: result.contractReview.keyMetrics.length,
     citation_count: result.citations.length,
     generation_ttft_ms: result.log.generation_ttft_ms,

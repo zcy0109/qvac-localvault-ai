@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "timestamp": "2026-06-05T13:32:52.590Z",
+  "timestamp": "2026-06-06T08:04:25.552Z",
   "sample": "evidence\\sample-documents\\confidential-vendor-contract.md",
   "checks": [
     {
@@ -21,6 +21,10 @@
     },
     {
       "name": "all missing clauses have evidence chunks",
+      "ok": true
+    },
+    {
+      "name": "all missing clauses have amendment drafts",
       "ok": true
     },
     {
@@ -46,14 +50,15 @@
     "qvac_sdk_version": "0.10.2",
     "remote_api_calls": [],
     "missing_clause_count": 5,
+    "amendment_draft_count": 5,
     "key_metric_count": 9,
     "citation_count": 6,
-    "generation_ttft_ms": 4172,
-    "generation_ms": 7954,
-    "model_load_ms": 7819,
-    "total_inference_ms": 15773,
-    "tokens_per_second": 69.4,
-    "end_to_end_tokens_per_second": 35
+    "generation_ttft_ms": 4757,
+    "generation_ms": 8644,
+    "model_load_ms": 23910,
+    "total_inference_ms": 32554,
+    "tokens_per_second": 63.4,
+    "end_to_end_tokens_per_second": 16.83
   },
   "evidence": {
     "latest_demo_run": "evidence/logs/latest-demo-run.json",

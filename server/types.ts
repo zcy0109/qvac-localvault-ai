@@ -60,6 +60,7 @@ export type ContractFinding = {
   evidenceAnchor?: string
   risk: string
   action: string
+  amendmentDraft: string
   evidenceChunkId?: string
   evidenceDocumentName?: string
   evidenceChunkIndex?: number
