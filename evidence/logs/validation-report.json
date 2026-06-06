@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "timestamp": "2026-06-06T09:01:17.927Z",
+  "timestamp": "2026-06-06T15:55:48.914Z",
   "samples": [
     {
       "file": "evidence\\sample-documents\\vendor-contract-risky.md",
@@ -24,6 +24,18 @@
           "ok": true
         },
         {
+          "name": "review matrix row count is 14",
+          "ok": true
+        },
+        {
+          "name": "policy pack id recorded",
+          "ok": true
+        },
+        {
+          "name": "policy pack version recorded",
+          "ok": true
+        },
+        {
           "name": "all missing clauses have evidence chunks",
           "ok": true
         },
@@ -33,6 +45,10 @@
         },
         {
           "name": "all key metrics have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "all review matrix rows have evidence chunks",
           "ok": true
         },
         {
@@ -50,7 +66,8 @@
       ],
       "expected": {
         "missing_clause_count": 5,
-        "key_metric_count": 9
+        "key_metric_count": 9,
+        "review_matrix_count": 14
       },
       "actual": {
         "provider": "qvac",
@@ -60,13 +77,16 @@
         "missing_clause_count": 5,
         "amendment_draft_count": 5,
         "key_metric_count": 9,
+        "review_matrix_count": 14,
         "citation_count": 4,
-        "generation_ttft_ms": 4218,
-        "generation_ms": 7683,
-        "model_load_ms": 5901,
-        "total_inference_ms": 13584,
-        "tokens_per_second": 67.55,
-        "end_to_end_tokens_per_second": 38.21,
+        "policy_pack_id": "vendor-contract-confidentiality-v1",
+        "policy_pack_version": "2026.06",
+        "generation_ttft_ms": 4775,
+        "generation_ms": 8429,
+        "model_load_ms": 4412,
+        "total_inference_ms": 12841,
+        "tokens_per_second": 60.86,
+        "end_to_end_tokens_per_second": 39.95,
         "document_hash": "465cefc3568ba0dd2fead88e3315a7c32e842a9d0ea4cdc6721541cbed5fb91d",
         "prompt_hash": "ad0ac17099f4f2cf1ffbad45c313b8970a75dbd9f61658bbe17d62249ff5125c"
       }
@@ -93,6 +113,18 @@
           "ok": true
         },
         {
+          "name": "review matrix row count is 14",
+          "ok": true
+        },
+        {
+          "name": "policy pack id recorded",
+          "ok": true
+        },
+        {
+          "name": "policy pack version recorded",
+          "ok": true
+        },
+        {
           "name": "all missing clauses have evidence chunks",
           "ok": true
         },
@@ -102,6 +134,10 @@
         },
         {
           "name": "all key metrics have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "all review matrix rows have evidence chunks",
           "ok": true
         },
         {
@@ -119,7 +155,8 @@
       ],
       "expected": {
         "missing_clause_count": 3,
-        "key_metric_count": 9
+        "key_metric_count": 9,
+        "review_matrix_count": 14
       },
       "actual": {
         "provider": "qvac",
@@ -129,13 +166,16 @@
         "missing_clause_count": 3,
         "amendment_draft_count": 3,
         "key_metric_count": 9,
+        "review_matrix_count": 14,
         "citation_count": 4,
-        "generation_ttft_ms": 767,
-        "generation_ms": 3246,
+        "policy_pack_id": "vendor-contract-confidentiality-v1",
+        "policy_pack_version": "2026.06",
+        "generation_ttft_ms": 761,
+        "generation_ms": 3330,
         "model_load_ms": 0,
-        "total_inference_ms": 3246,
-        "tokens_per_second": 145.41,
-        "end_to_end_tokens_per_second": 145.41,
+        "total_inference_ms": 3330,
+        "tokens_per_second": 145.95,
+        "end_to_end_tokens_per_second": 145.95,
         "document_hash": "99a8f9317d0cd4466a334b4ea77ffe01bf4bad5dee65097da8d93424247acb2b",
         "prompt_hash": "c93dce2d15917bbbdd9fec50f1d4b2d13a6a416811860720a233ad0d1a982a4f"
       }
@@ -162,6 +202,18 @@
           "ok": true
         },
         {
+          "name": "review matrix row count is 14",
+          "ok": true
+        },
+        {
+          "name": "policy pack id recorded",
+          "ok": true
+        },
+        {
+          "name": "policy pack version recorded",
+          "ok": true
+        },
+        {
           "name": "all missing clauses have evidence chunks",
           "ok": true
         },
@@ -171,6 +223,10 @@
         },
         {
           "name": "all key metrics have evidence chunks",
+          "ok": true
+        },
+        {
+          "name": "all review matrix rows have evidence chunks",
           "ok": true
         },
         {
@@ -188,7 +244,8 @@
       ],
       "expected": {
         "missing_clause_count": 0,
-        "key_metric_count": 9
+        "key_metric_count": 9,
+        "review_matrix_count": 14
       },
       "actual": {
         "provider": "qvac",
@@ -198,13 +255,16 @@
         "missing_clause_count": 0,
         "amendment_draft_count": 0,
         "key_metric_count": 9,
+        "review_matrix_count": 14,
         "citation_count": 6,
-        "generation_ttft_ms": 874,
-        "generation_ms": 3561,
+        "policy_pack_id": "vendor-contract-confidentiality-v1",
+        "policy_pack_version": "2026.06",
+        "generation_ttft_ms": 866,
+        "generation_ms": 3555,
         "model_load_ms": 0,
-        "total_inference_ms": 3561,
-        "tokens_per_second": 131.42,
-        "end_to_end_tokens_per_second": 131.42,
+        "total_inference_ms": 3555,
+        "tokens_per_second": 124.61,
+        "end_to_end_tokens_per_second": 124.61,
         "document_hash": "f7a865220963d52ebec3c23f21b6aa800a20129ea2e693fced61fc30361daf82",
         "prompt_hash": "6f8c2440aaa916cda57e39e220c9b7a2aa0937cf65c7449c3a8139334b79a20b"
       }
@@ -213,6 +273,7 @@
   "evidence": {
     "latest_demo_run": "evidence/logs/latest-demo-run.json",
     "validation_report": "evidence/logs/validation-report.json",
+    "review_report": "evidence/logs/review-report.json",
     "api_disclosure": "evidence/api-disclosure.json"
   }
 }

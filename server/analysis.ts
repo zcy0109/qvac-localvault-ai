@@ -10,6 +10,7 @@ import type {
   ContractMetric,
   DocumentInput,
   InferenceLog,
+  ReviewMatrixRow,
   SourceChunk,
 } from './types.js'
 
@@ -49,6 +50,8 @@ export async function analyzeDocuments(input: {
     selectedChunks,
     missingClauseCount: signalsWithEvidence.missingClauses.length,
     keyMetricCount: signalsWithEvidence.keyMetrics.length,
+    reviewMatrixCount: signalsWithEvidence.reviewMatrix.length,
+    policyPack: signalsWithEvidence.policyPack,
   })
   const citations = selectedChunks.slice(0, 10).map((chunk) => ({
     chunkId: chunk.id,
@@ -230,6 +233,9 @@ function attachEvidenceReferences(
     keyMetrics: contractSignals.keyMetrics.map((metric) =>
       attachMetricReference(metric, chunks),
     ),
+    reviewMatrix: contractSignals.reviewMatrix.map((row) =>
+      attachMatrixReference(row, chunks),
+    ),
   }
 }
 
@@ -266,6 +272,21 @@ function attachMetricReference(
   }
 }
 
+function attachMatrixReference(
+  row: ReviewMatrixRow,
+  chunks: SourceChunk[],
+): ReviewMatrixRow {
+  const chunk = findEvidenceChunk(row.evidenceAnchor || row.evidence, chunks)
+  if (!chunk) return row
+
+  return {
+    ...row,
+    evidenceChunkId: chunk.id,
+    evidenceDocumentName: chunk.documentName,
+    evidenceChunkIndex: chunk.index,
+  }
+}
+
 function evidenceChunks(
   contractSignals: ReturnType<typeof reviewContractLocally>,
   chunks: SourceChunk[],
@@ -276,6 +297,9 @@ function evidenceChunks(
       .filter(Boolean),
     ...contractSignals.keyMetrics
       .map((metric) => metric.evidenceChunkId)
+      .filter(Boolean),
+    ...contractSignals.reviewMatrix
+      .map((row) => row.evidenceChunkId)
       .filter(Boolean),
   ])
 
@@ -432,6 +456,10 @@ async function persistEvidence(result: AnalysisResult) {
     path.join(evidenceDir, 'logs', 'latest-demo-run.json'),
     `${JSON.stringify(result.log, null, 2)}\n`,
   )
+  await fs.writeFile(
+    path.join(evidenceDir, 'logs', 'review-report.json'),
+    `${JSON.stringify(buildReviewReport(result), null, 2)}\n`,
+  )
 }
 
 async function enrichEvidenceLog(input: {
@@ -442,6 +470,12 @@ async function enrichEvidenceLog(input: {
   selectedChunks: SourceChunk[]
   missingClauseCount: number
   keyMetricCount: number
+  reviewMatrixCount: number
+  policyPack: {
+    id: string
+    name: string
+    version: string
+  }
 }): Promise<InferenceLog> {
   return {
     ...input.log,
@@ -462,8 +496,49 @@ async function enrichEvidenceLog(input: {
       index: chunk.index,
       score: chunk.score,
     })),
+    policy_pack_id: input.policyPack.id,
+    policy_pack_version: input.policyPack.version,
+    review_matrix_count: input.reviewMatrixCount,
     missing_clause_count: input.missingClauseCount,
     key_metric_count: input.keyMetricCount,
+  }
+}
+
+function buildReviewReport(result: AnalysisResult) {
+  return {
+    generated_at: result.log.timestamp,
+    project: 'LocalVault AI',
+    analysis_mode: result.log.analysis_mode,
+    policy_pack: {
+      id: result.log.policy_pack_id,
+      version: result.log.policy_pack_version,
+    },
+    local_inference: {
+      provider: result.log.provider,
+      model: result.log.model,
+      qvac_sdk_version: result.log.qvac_sdk_version,
+      remote_api_calls: result.log.remote_api_calls,
+      device_info: result.log.device_info,
+    },
+    evidence: {
+      document_hashes: result.log.document_hashes,
+      system_prompt_hash: result.log.system_prompt_hash,
+      retrieved_chunks: result.log.retrieved_chunks,
+    },
+    performance: {
+      model_load_ms: result.log.model_load_ms,
+      generation_ttft_ms: result.log.generation_ttft_ms,
+      generation_ms: result.log.generation_ms,
+      total_inference_ms: result.log.total_inference_ms,
+      tokens_per_second: result.log.tokens_per_second,
+      end_to_end_tokens_per_second: result.log.end_to_end_tokens_per_second,
+    },
+    summary: result.summary,
+    review_matrix: result.contractReview.reviewMatrix,
+    missing_clauses: result.contractReview.missingClauses,
+    key_metrics: result.contractReview.keyMetrics,
+    risks: result.risks,
+    action_items: result.actionItems,
   }
 }
 

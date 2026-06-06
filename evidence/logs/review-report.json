@@ -1,0 +1,351 @@
+{
+  "generated_at": "2026-06-06T15:55:48.910Z",
+  "project": "LocalVault AI",
+  "analysis_mode": "hybrid-deterministic-contract-review",
+  "policy_pack": {
+    "id": "vendor-contract-confidentiality-v1",
+    "version": "2026.06"
+  },
+  "local_inference": {
+    "provider": "qvac",
+    "model": "QWEN3_600M_INST_Q4",
+    "qvac_sdk_version": "0.10.2",
+    "remote_api_calls": [],
+    "device_info": {
+      "os": "Windows_NT 10.0.19045",
+      "arch": "x64",
+      "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
+      "cpu_count": 12,
+      "total_ram_gb": 15.71,
+      "free_ram_gb": 2.1,
+      "node": "v24.12.0"
+    }
+  },
+  "evidence": {
+    "document_hashes": [
+      {
+        "name": "vendor-contract-complete.md",
+        "sha256": "f7a865220963d52ebec3c23f21b6aa800a20129ea2e693fced61fc30361daf82",
+        "chars": 4622
+      }
+    ],
+    "system_prompt_hash": "6f8c2440aaa916cda57e39e220c9b7a2aa0937cf65c7449c3a8139334b79a20b",
+    "retrieved_chunks": [
+      {
+        "id": "39c56123186b",
+        "documentName": "vendor-contract-complete.md",
+        "index": 3,
+        "score": 25
+      },
+      {
+        "id": "4d67a8c0a6e3",
+        "documentName": "vendor-contract-complete.md",
+        "index": 4,
+        "score": 23
+      },
+      {
+        "id": "57f0e7c36fac",
+        "documentName": "vendor-contract-complete.md",
+        "index": 2,
+        "score": 19
+      },
+      {
+        "id": "26c7a8a0fed2",
+        "documentName": "vendor-contract-complete.md",
+        "index": 5,
+        "score": 16.912
+      },
+      {
+        "id": "acf3bb7cf90b",
+        "documentName": "vendor-contract-complete.md",
+        "index": 0,
+        "score": 15
+      },
+      {
+        "id": "0385778bdba5",
+        "documentName": "vendor-contract-complete.md",
+        "index": 1,
+        "score": 13
+      }
+    ]
+  },
+  "performance": {
+    "model_load_ms": 0,
+    "generation_ttft_ms": 866,
+    "generation_ms": 3555,
+    "total_inference_ms": 3555,
+    "tokens_per_second": 124.61,
+    "end_to_end_tokens_per_second": 124.61
+  },
+  "summary": "Key extracted metrics: Incident response SLA = P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours; Incident response SLA = P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours; Incident response SLA = P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours; Incident response SLA = P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days; Audit log retention = minimum 180 days; Liquidated damages = 20% of total contract value; Confidentiality survival period = 3 years; Data retention limit = no copies after service completion; Local-only data processing = on-premises only; no cloud/off-site transfer.",
+  "review_matrix": [
+    {
+      "id": "breach-notification-deadline",
+      "category": "Incident Response",
+      "requirement": "data breach notification deadline",
+      "status": "present",
+      "severity": "high",
+      "evidence": "5. Data Breach and Security Incident Notification",
+      "evidenceAnchor": "5. Data Breach and Security Incident Notification",
+      "recommendation": "Maintain this clause and keep evidence traceable.",
+      "evidenceChunkId": "57f0e7c36fac",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 2
+    },
+    {
+      "id": "party-a-audit-right",
+      "category": "Audit And Assurance",
+      "requirement": "Party A audit right",
+      "status": "present",
+      "severity": "high",
+      "evidence": "Party A has the right to audit Party B's data processing activities, security controls, access logs, subcontractor activity, and personnel access records upon reasonable notice. Party B shall provide relevant evidence and remediate confirmed findings within the agreed remediation period.",
+      "evidenceAnchor": "Party A has the right to audit Party B's data processing activities, security controls, access logs, subcontractor activity, and personnel access records upon reasonable notice. Party B shall provide relevant evidence and remediate confirmed findings within the agreed remediation period.",
+      "recommendation": "Maintain this clause and keep evidence traceable.",
+      "evidenceChunkId": "39c56123186b",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 3
+    },
+    {
+      "id": "force-majeure-liability",
+      "category": "Legal Resilience",
+      "requirement": "force majeure liability allocation",
+      "status": "present",
+      "severity": "high",
+      "evidence": "7. Force Majeure",
+      "evidenceAnchor": "7. Force Majeure",
+      "recommendation": "Maintain this clause and keep evidence traceable.",
+      "evidenceChunkId": "39c56123186b",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 3
+    },
+    {
+      "id": "ip-ownership",
+      "category": "Intellectual Property",
+      "requirement": "intellectual property ownership",
+      "status": "present",
+      "severity": "high",
+      "evidence": "8. Intellectual Property and Deliverables",
+      "evidenceAnchor": "8. Intellectual Property and Deliverables",
+      "recommendation": "Maintain this clause and keep evidence traceable.",
+      "evidenceChunkId": "39c56123186b",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 3
+    },
+    {
+      "id": "security-reporting",
+      "category": "Security Governance",
+      "requirement": "regular security reporting requirement",
+      "status": "present",
+      "severity": "high",
+      "evidence": "9. Security Reporting",
+      "evidenceAnchor": "9. Security Reporting",
+      "recommendation": "Maintain this clause and keep evidence traceable.",
+      "evidenceChunkId": "4d67a8c0a6e3",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 4
+    },
+    {
+      "id": "incident-response-sla-1",
+      "category": "Incident Response",
+      "requirement": "Incident response SLA",
+      "status": "present",
+      "severity": "medium",
+      "evidence": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
+      "evidenceAnchor": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
+      "recommendation": "Verify owner, clock-start definition, escalation path, and evidence trail.",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    },
+    {
+      "id": "incident-response-sla-2",
+      "category": "Incident Response",
+      "requirement": "Incident response SLA",
+      "status": "present",
+      "severity": "medium",
+      "evidence": "P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours",
+      "evidenceAnchor": "P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours",
+      "recommendation": "Verify owner, clock-start definition, escalation path, and evidence trail.",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    },
+    {
+      "id": "incident-response-sla-3",
+      "category": "Incident Response",
+      "requirement": "Incident response SLA",
+      "status": "present",
+      "severity": "medium",
+      "evidence": "P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours",
+      "evidenceAnchor": "P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours",
+      "recommendation": "Verify owner, clock-start definition, escalation path, and evidence trail.",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    },
+    {
+      "id": "incident-response-sla-4",
+      "category": "Incident Response",
+      "requirement": "Incident response SLA",
+      "status": "present",
+      "severity": "medium",
+      "evidence": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
+      "evidenceAnchor": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
+      "recommendation": "Verify owner, clock-start definition, escalation path, and evidence trail.",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    },
+    {
+      "id": "audit-log-retention",
+      "category": "Audit And Assurance",
+      "requirement": "Audit log retention",
+      "status": "present",
+      "severity": "medium",
+      "evidence": "Audit Logs: Party B must maintain complete access logs for all data operations for a minimum of 180 days.",
+      "evidenceAnchor": "Audit Logs: Party B must maintain complete access logs for all data operations for a minimum of 180 days.",
+      "recommendation": "Preserve the audit-log retention requirement and define inspector, export format, and tamper-evidence controls.",
+      "evidenceChunkId": "57f0e7c36fac",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 2
+    },
+    {
+      "id": "liquidated-damages",
+      "category": "Liability",
+      "requirement": "Liquidated damages",
+      "status": "present",
+      "severity": "medium",
+      "evidence": "In the event of a breach of confidentiality by Party B, Party B shall pay liquidated damages equal to 20% of the total contract value. Party B shall also compensate Party A for direct and indirect losses caused by the breach.",
+      "evidenceAnchor": "In the event of a breach of confidentiality by Party B, Party B shall pay liquidated damages equal to 20% of the total contract value. Party B shall also compensate Party A for direct and indirect losses caused by the breach.",
+      "recommendation": "Review whether the damages cap covers the sensitivity and business value of the protected data.",
+      "evidenceChunkId": "26c7a8a0fed2",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 5
+    },
+    {
+      "id": "confidentiality-survival",
+      "category": "Confidentiality",
+      "requirement": "Confidentiality survival period",
+      "status": "present",
+      "severity": "low",
+      "evidence": "Party B shall not disclose Confidential Information to third parties without Party A's written consent. Party B shall return or securely destroy Confidential Information upon termination. Confidentiality obligations survive the termination of this agreement for a period of 3 years.",
+      "evidenceAnchor": "Party B shall not disclose Confidential Information to third parties without Party A's written consent. Party B shall return or securely destroy Confidential Information upon termination. Confidentiality obligations survive the termination of this agreement for a period of 3 years.",
+      "recommendation": "Confirm whether three years is sufficient for the protected data classes.",
+      "evidenceChunkId": "26c7a8a0fed2",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 5
+    },
+    {
+      "id": "data-retention-limit",
+      "category": "Data Retention",
+      "requirement": "Data retention limit",
+      "status": "present",
+      "severity": "medium",
+      "evidence": "Data Retention: Party B may not retain any copies of Party A's data after service completion.",
+      "evidenceAnchor": "Data Retention: Party B may not retain any copies of Party A's data after service completion.",
+      "recommendation": "Preserve the no-copy requirement and define deletion evidence.",
+      "evidenceChunkId": "57f0e7c36fac",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 2
+    },
+    {
+      "id": "local-only-processing",
+      "category": "Data Localization",
+      "requirement": "Local-only data processing",
+      "status": "present",
+      "severity": "medium",
+      "evidence": "Data Localization: All Party A's data must be processed and stored exclusively on Party A's on-premises servers. No data may be transferred to any cloud service or off-site location.",
+      "evidenceAnchor": "Data Localization: All Party A's data must be processed and stored exclusively on Party A's on-premises servers. No data may be transferred to any cloud service or off-site location.",
+      "recommendation": "Preserve the local-only processing control and define exceptions approval.",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    }
+  ],
+  "missing_clauses": [],
+  "key_metrics": [
+    {
+      "label": "Incident response SLA",
+      "value": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
+      "evidence": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    },
+    {
+      "label": "Incident response SLA",
+      "value": "P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours",
+      "evidence": "P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    },
+    {
+      "label": "Incident response SLA",
+      "value": "P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours",
+      "evidence": "P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    },
+    {
+      "label": "Incident response SLA",
+      "value": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
+      "evidence": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    },
+    {
+      "label": "Audit log retention",
+      "value": "minimum 180 days",
+      "evidence": "Audit Logs: Party B must maintain complete access logs for all data operations for a minimum of 180 days.",
+      "evidenceChunkId": "57f0e7c36fac",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 2
+    },
+    {
+      "label": "Liquidated damages",
+      "value": "20% of total contract value",
+      "evidence": "In the event of a breach of confidentiality by Party B, Party B shall pay liquidated damages equal to 20% of the total contract value. Party B shall also compensate Party A for direct and indirect losses caused by the breach.",
+      "evidenceChunkId": "26c7a8a0fed2",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 5
+    },
+    {
+      "label": "Confidentiality survival period",
+      "value": "3 years",
+      "evidence": "Party B shall not disclose Confidential Information to third parties without Party A's written consent. Party B shall return or securely destroy Confidential Information upon termination. Confidentiality obligations survive the termination of this agreement for a period of 3 years.",
+      "evidenceChunkId": "26c7a8a0fed2",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 5
+    },
+    {
+      "label": "Data retention limit",
+      "value": "no copies after service completion",
+      "evidence": "Data Retention: Party B may not retain any copies of Party A's data after service completion.",
+      "evidenceChunkId": "57f0e7c36fac",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 2
+    },
+    {
+      "label": "Local-only data processing",
+      "value": "on-premises only; no cloud/off-site transfer",
+      "evidence": "Data Localization: All Party A's data must be processed and stored exclusively on Party A's on-premises servers. No data may be transferred to any cloud service or off-site location.",
+      "evidenceChunkId": "0385778bdba5",
+      "evidenceDocumentName": "vendor-contract-complete.md",
+      "evidenceChunkIndex": 1
+    }
+  ],
+  "risks": [
+    "Liquidated damages are fixed at 20% of total contract value; check whether this cap is sufficient for customer PII, financial records, and internal business data. Evidence: \"In the event of a breach of confidentiality by Party B, Party B shall pay liquidated damages equal to 20% of the total contract value. Party B shall also compensate Party A for direct and indirect losses caused by the breach.\""
+  ],
+  "action_items": [
+    "Preserve the audit-log retention requirement and define inspector, export format, and tamper-evidence controls.",
+    "Review whether the damages cap covers the sensitivity and business value of the protected data.",
+    "Confirm whether three years is sufficient for the protected data classes.",
+    "Preserve the no-copy requirement and define deletion evidence.",
+    "Preserve the local-only processing control and define exceptions approval.",
+    "Verify that each P1-P4 SLA has an owner, clock-start definition, escalation path, and evidence trail."
+  ]
+}

@@ -38,6 +38,7 @@ Show:
 
 - Missing clauses: `5`
 - Key metrics: `9`
+- Policy Matrix rows: `14`
 - Incident response SLA P1-P4
 - Audit log retention
 - Liquidated damages
@@ -46,7 +47,9 @@ Show:
 
 ## 2:00 - 2:50 Evidence-Bound Findings
 
-Scroll to the missing clauses section.
+Scroll to the Policy Matrix and missing clauses sections.
+
+Show that the Policy Matrix is generated from `policy-packs/vendor-contract.json` and contains requirement, status, evidence, and recommendation columns.
 
 Show the five high-risk missing clauses:
 
@@ -60,7 +63,7 @@ For two findings, click the evidence chunk button and show the right-side citati
 
 ## 2:50 - 3:35 Amendment Drafts
 
-Show the Suggested amendment sections. Explain that the app does not only flag risk; it drafts concrete replacement clauses that a legal or security reviewer can edit.
+Show the Suggested amendment sections and the export button. Explain that the app does not only flag risk; it drafts concrete replacement clauses and exports a review report that a legal or security reviewer can audit.
 
 ## 3:35 - 4:20 Robustness Check
 
@@ -79,6 +82,8 @@ Point out:
 - `remote_api_calls: []`
 - document SHA-256 hashes
 - prompt SHA-256 hashes
+- policy pack ID and version
+- review matrix row count
 - QVAC SDK version
 - performance metrics
 

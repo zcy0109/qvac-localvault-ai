@@ -1,0 +1,131 @@
+{
+  "id": "vendor-contract-confidentiality-v1",
+  "name": "Confidential Vendor Contract Review",
+  "version": "2026.06",
+  "description": "Local policy pack for confidential vendor contracts. It checks required security, audit, retention, breach notification, IP, and reporting controls without cloud AI APIs.",
+  "slaPrefixes": ["P1", "P2", "P3", "P4"],
+  "missingClauses": [
+    {
+      "id": "breach-notification-deadline",
+      "title": "Missing data breach notification deadline",
+      "category": "Incident Response",
+      "severity": "high",
+      "requiredPatterns": [
+        "data breach[^.]{0,120}notif",
+        "notif[^.]{0,120}data breach",
+        "security incident[^.]{0,120}notif",
+        "notif[^.]{0,120}security incident"
+      ],
+      "evidencePattern": "P1.*data breach risk|Party A reserves the right to terminate.*breach",
+      "risk": "The contract does not define how quickly Party B must notify Party A after a data breach, which can delay incident response and regulatory handling.",
+      "action": "Add a breach notification clause with a concrete deadline, escalation channel, required evidence, and incident owner.",
+      "amendmentDraft": "Data Breach Notification. Party B shall notify Party A in writing within 24 hours after becoming aware of any actual or suspected data breach, security incident, unauthorized access, or loss of Confidential Information. The notice must include the time discovered, affected systems, data categories, mitigation steps, responsible incident owner, and follow-up remediation plan. Party B shall provide material updates at least every 24 hours until containment is complete."
+    },
+    {
+      "id": "party-a-audit-right",
+      "title": "Missing Party A audit right",
+      "category": "Audit And Assurance",
+      "severity": "high",
+      "requiredPatterns": [
+        "Party A[^.]{0,120}right[^.]{0,80}audit",
+        "Party A[^.]{0,120}audit[^.]{0,80}Party B",
+        "inspect[^.]{0,80}Party B[^.]{0,80}data processing"
+      ],
+      "evidencePattern": "Audit Logs:.*minimum of 180 days|Access Control:.*least privilege",
+      "risk": "Party A lacks an explicit right to inspect Party B data processing practices, making compliance verification difficult.",
+      "action": "Add an audit-right clause covering audit frequency, scope, notice period, evidence access, and remediation obligations.",
+      "amendmentDraft": "Audit Rights. Party A may, upon reasonable prior notice and no more than twice per calendar year unless a security incident occurs, audit Party B's compliance with this agreement. Party B shall provide access to relevant policies, access logs, personnel records, subcontractor records, and technical evidence reasonably necessary to verify data processing, confidentiality, and security controls. Party B shall remediate confirmed findings within a mutually agreed remediation period."
+    },
+    {
+      "id": "force-majeure-liability",
+      "title": "Missing force majeure liability allocation",
+      "category": "Legal Resilience",
+      "severity": "high",
+      "requiredPatterns": ["force majeure", "act of god", "unforeseeable event"],
+      "evidencePattern": "Liability for Breach|Dispute Resolution|Miscellaneous",
+      "risk": "The contract does not explain which obligations survive force majeure or how liability is allocated during exceptional events.",
+      "action": "Add a force majeure clause that separates excused delay from confidentiality, security, notification, and mitigation duties.",
+      "amendmentDraft": "Force Majeure. Neither party shall be liable for delay caused by events beyond reasonable control, provided that the affected party promptly notifies the other party and uses commercially reasonable efforts to mitigate the impact. Force majeure shall not excuse Party B from confidentiality, data protection, breach notification, access control, return or destruction of data, or incident mitigation obligations."
+    },
+    {
+      "id": "ip-ownership",
+      "title": "Missing intellectual property ownership",
+      "category": "Intellectual Property",
+      "severity": "high",
+      "requiredPatterns": [
+        "intellectual property",
+        "IP ownership",
+        "ownership[^.]{0,120}deliverables",
+        "deliverables[^.]{0,120}ownership"
+      ],
+      "evidencePattern": "technical documents|code snippets|documentation updates",
+      "risk": "Ownership of service deliverables is undefined, which may create disputes over scripts, reports, configurations, or documentation.",
+      "action": "Add an IP ownership clause defining deliverables, background IP, license scope, source materials, and post-termination rights.",
+      "amendmentDraft": "Intellectual Property and Deliverables. Party A shall own all reports, configurations, scripts, documentation, remediation records, and other deliverables specifically created for Party A under this agreement. Each party retains ownership of its pre-existing intellectual property. Party B grants Party A a perpetual, royalty-free license to use any Party B background materials embedded in the deliverables solely as necessary to operate and maintain Party A systems."
+    },
+    {
+      "id": "security-reporting",
+      "title": "Missing regular security reporting requirement",
+      "category": "Security Governance",
+      "severity": "high",
+      "requiredPatterns": [
+        "security report",
+        "periodic security",
+        "regular security",
+        "security summary"
+      ],
+      "evidencePattern": "authorized personnel.*monthly|Audit Logs:.*minimum of 180 days|Access Control",
+      "risk": "Party A does not receive a recurring security reporting commitment, reducing ongoing visibility into vendor controls.",
+      "action": "Add a reporting clause requiring periodic security summaries, incident statistics, access-review results, and open remediation items.",
+      "amendmentDraft": "Security Reporting. Party B shall provide Party A with a written security report at least monthly. The report must include access review results, privileged account changes, incident and near-miss statistics, subcontractor activity, unresolved remediation items, and confirmation that data localization, encryption, access control, and retention requirements remain satisfied."
+    }
+  ],
+  "keyMetrics": [
+    {
+      "id": "audit-log-retention",
+      "label": "Audit log retention",
+      "category": "Audit And Assurance",
+      "severity": "medium",
+      "pattern": "Audit Logs:.*minimum of 180 days",
+      "value": "minimum 180 days",
+      "recommendation": "Preserve the audit-log retention requirement and define inspector, export format, and tamper-evidence controls."
+    },
+    {
+      "id": "liquidated-damages",
+      "label": "Liquidated damages",
+      "category": "Liability",
+      "severity": "medium",
+      "pattern": "liquidated damages equal to 20% of the total contract value",
+      "value": "20% of total contract value",
+      "risk": "Liquidated damages are fixed at 20% of total contract value; check whether this cap is sufficient for customer PII, financial records, and internal business data.",
+      "recommendation": "Review whether the damages cap covers the sensitivity and business value of the protected data."
+    },
+    {
+      "id": "confidentiality-survival",
+      "label": "Confidentiality survival period",
+      "category": "Confidentiality",
+      "severity": "low",
+      "pattern": "Confidentiality obligations survive.*3 years",
+      "value": "3 years",
+      "recommendation": "Confirm whether three years is sufficient for the protected data classes."
+    },
+    {
+      "id": "data-retention-limit",
+      "label": "Data retention limit",
+      "category": "Data Retention",
+      "severity": "medium",
+      "pattern": "Data Retention:.*may not retain any copies.*after service completion",
+      "value": "no copies after service completion",
+      "recommendation": "Preserve the no-copy requirement and define deletion evidence."
+    },
+    {
+      "id": "local-only-processing",
+      "label": "Local-only data processing",
+      "category": "Data Localization",
+      "severity": "medium",
+      "pattern": "Data Localization:.*on-premises servers.*No data may be transferred",
+      "value": "on-premises only; no cloud/off-site transfer",
+      "recommendation": "Preserve the local-only processing control and define exceptions approval."
+    }
+  ]
+}

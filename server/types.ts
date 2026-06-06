@@ -48,6 +48,9 @@ export type InferenceLog = {
     score: number
   }>
   selected_chunks: string[]
+  policy_pack_id?: string
+  policy_pack_version?: string
+  review_matrix_count?: number
   missing_clause_count: number
   key_metric_count: number
   device_info: DeviceInfo
@@ -75,9 +78,24 @@ export type ContractMetric = {
   evidenceChunkIndex?: number
 }
 
+export type ReviewMatrixRow = {
+  id: string
+  category: string
+  requirement: string
+  status: 'present' | 'missing' | 'review'
+  severity: 'high' | 'medium' | 'low'
+  evidence: string
+  evidenceAnchor?: string
+  recommendation: string
+  evidenceChunkId?: string
+  evidenceDocumentName?: string
+  evidenceChunkIndex?: number
+}
+
 export type ContractReview = {
   keyMetrics: ContractMetric[]
   missingClauses: ContractFinding[]
+  reviewMatrix: ReviewMatrixRow[]
   risks: string[]
   actionItems: string[]
   brief: string

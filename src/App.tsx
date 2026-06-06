@@ -3,6 +3,7 @@ import {
   Activity,
   AlertTriangle,
   CheckCircle2,
+  Download,
   FileText,
   Gauge,
   ListChecks,
@@ -51,11 +52,25 @@ type AnalysisResult = {
       evidenceDocumentName?: string
       evidenceChunkIndex?: number
     }>
+    reviewMatrix: Array<{
+      id: string
+      category: string
+      requirement: string
+      status: 'present' | 'missing' | 'review'
+      severity: 'high' | 'medium' | 'low'
+      evidence: string
+      evidenceAnchor?: string
+      recommendation: string
+      evidenceChunkId?: string
+      evidenceDocumentName?: string
+      evidenceChunkIndex?: number
+    }>
     risks: string[]
     actionItems: string[]
     brief: string
   }
   log: {
+    timestamp: string
     provider: string
     purpose: string
     analysis_mode?: string
@@ -87,6 +102,9 @@ type AnalysisResult = {
       score: number
     }>
     selected_chunks: string[]
+    policy_pack_id?: string
+    policy_pack_version?: string
+    review_matrix_count?: number
     missing_clause_count?: number
     key_metric_count?: number
     device_info: {
@@ -467,10 +485,11 @@ function AuditEvidencePack({ result }: { result: AnalysisResult }) {
       </div>
       <div className="pack-paths">
         <span>Reproduce: npm run validate:demo</span>
-        <span>Log: evidence/logs/latest-demo-run.json</span>
-        <span>Report: evidence/logs/validation-report.json</span>
-      </div>
-    </section>
+                <span>Log: evidence/logs/latest-demo-run.json</span>
+                <span>Report: evidence/logs/validation-report.json</span>
+                <span>Review report: evidence/logs/review-report.json</span>
+              </div>
+            </section>
   )
 }
 
@@ -486,6 +505,7 @@ function ContractReviewPanel({
   const review = result.contractReview ?? {
     keyMetrics: [],
     missingClauses: [],
+    reviewMatrix: [],
     risks: result.risks,
     actionItems: result.actionItems,
     brief: result.summary,
@@ -494,6 +514,9 @@ function ContractReviewPanel({
     ? review.missingClauses
     : []
   const keyMetrics = Array.isArray(review.keyMetrics) ? review.keyMetrics : []
+  const reviewMatrix = Array.isArray(review.reviewMatrix)
+    ? review.reviewMatrix
+    : []
   const risks = cleanList(Array.isArray(review.risks) ? review.risks : result.risks)
   const actionItems = cleanList(
     Array.isArray(review.actionItems) ? review.actionItems : result.actionItems,
@@ -509,6 +532,57 @@ function ContractReviewPanel({
         <div className="review-score">
           <span>缺失条款</span>
           <strong>{missingClauses.length}</strong>
+        </div>
+      </section>
+
+      <section>
+        <div className="section-heading split-heading">
+          <div>
+            <ListChecks size={17} />
+            <h3>Policy Matrix</h3>
+          </div>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => downloadReviewReport(result)}
+          >
+            <Download size={15} />
+            导出报告
+          </button>
+        </div>
+        <div className="matrix-table" role="table" aria-label="Policy review matrix">
+          <div className="matrix-row matrix-header" role="row">
+            <span>要求项</span>
+            <span>状态</span>
+            <span>证据</span>
+            <span>建议</span>
+          </div>
+          {reviewMatrix.map((row) => (
+            <div
+              key={row.id}
+              className={`matrix-row matrix-${row.status}`}
+              role="row"
+            >
+              <div>
+                <strong>{row.requirement}</strong>
+                <small>{row.category}</small>
+              </div>
+              <span className={`matrix-status ${row.status}`}>
+                {formatMatrixStatus(row.status)}
+              </span>
+              <p>{row.evidence}</p>
+              <p>{row.recommendation}</p>
+              {row.evidenceChunkId && (
+                <button
+                  type="button"
+                  className="evidence-link matrix-link"
+                  onClick={() => onSelectCitation(row.evidenceChunkId ?? '')}
+                >
+                  证据分片 {shortHash(row.evidenceChunkId)}
+                </button>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -668,6 +742,60 @@ function extractJsonLikeField(text: string, key: string) {
 function shortHash(value?: string) {
   if (!value) return ''
   return `${value.slice(0, 10)}...${value.slice(-8)}`
+}
+
+function formatMatrixStatus(status: 'present' | 'missing' | 'review') {
+  if (status === 'present') return '通过'
+  if (status === 'missing') return '缺失'
+  return '复核'
+}
+
+function downloadReviewReport(result: AnalysisResult) {
+  const report = {
+    generated_at: result.log.timestamp ?? new Date().toISOString(),
+    project: 'LocalVault AI',
+    analysis_mode: result.log.analysis_mode,
+    policy_pack: {
+      id: result.log.policy_pack_id,
+      version: result.log.policy_pack_version,
+    },
+    local_inference: {
+      provider: result.log.provider,
+      model: result.log.model,
+      qvac_sdk_version: result.log.qvac_sdk_version,
+      remote_api_calls: result.log.remote_api_calls,
+      device_info: result.log.device_info,
+    },
+    evidence: {
+      document_hashes: result.log.document_hashes,
+      system_prompt_hash: result.log.system_prompt_hash,
+      retrieved_chunks: result.log.retrieved_chunks,
+    },
+    performance: {
+      model_load_ms: result.log.model_load_ms,
+      generation_ttft_ms: result.log.generation_ttft_ms,
+      generation_ms: result.log.generation_ms,
+      total_inference_ms: result.log.total_inference_ms,
+      tokens_per_second: result.log.tokens_per_second,
+      end_to_end_tokens_per_second: result.log.end_to_end_tokens_per_second,
+    },
+    summary: result.summary,
+    review_matrix: result.contractReview.reviewMatrix,
+    missing_clauses: result.contractReview.missingClauses,
+    key_metrics: result.contractReview.keyMetrics,
+    risks: result.risks,
+    action_items: result.actionItems,
+  }
+  const url = URL.createObjectURL(
+    new Blob([`${JSON.stringify(report, null, 2)}\n`], {
+      type: 'application/json',
+    }),
+  )
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = 'localvault-review-report.json'
+  anchor.click()
+  URL.revokeObjectURL(url)
 }
 
 export default App

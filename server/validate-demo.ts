@@ -10,18 +10,21 @@ const samples = [
     file: 'vendor-contract-risky.md',
     expectedMissingClauses: 5,
     expectedKeyMetrics: 9,
+    expectedMatrixRows: 14,
     purpose: 'high-risk contract with all target missing clauses',
   },
   {
     file: 'vendor-contract-partial.md',
     expectedMissingClauses: 3,
     expectedKeyMetrics: 9,
+    expectedMatrixRows: 14,
     purpose: 'partially compliant contract with breach notification and audit rights present',
   },
   {
     file: 'vendor-contract-complete.md',
     expectedMissingClauses: 0,
     expectedKeyMetrics: 9,
+    expectedMatrixRows: 14,
     purpose: 'complete contract used to check false positives',
   },
 ]
@@ -47,6 +50,7 @@ for (const sample of samples) {
 
   const missingClauseCount = result.contractReview.missingClauses.length
   const keyMetricCount = result.contractReview.keyMetrics.length
+  const matrixRowCount = result.contractReview.reviewMatrix.length
   const amendmentDraftCount = result.contractReview.missingClauses.filter((finding) =>
     Boolean(finding.amendmentDraft?.trim()),
   ).length
@@ -63,6 +67,15 @@ for (const sample of samples) {
       keyMetricCount === sample.expectedKeyMetrics,
     ),
     check(
+      `review matrix row count is ${sample.expectedMatrixRows}`,
+      matrixRowCount === sample.expectedMatrixRows,
+    ),
+    check(
+      'policy pack id recorded',
+      result.log.policy_pack_id === 'vendor-contract-confidentiality-v1',
+    ),
+    check('policy pack version recorded', Boolean(result.log.policy_pack_version)),
+    check(
       'all missing clauses have evidence chunks',
       result.contractReview.missingClauses.every((finding) => finding.evidenceChunkId),
     ),
@@ -75,6 +88,10 @@ for (const sample of samples) {
     check(
       'all key metrics have evidence chunks',
       result.contractReview.keyMetrics.every((metric) => metric.evidenceChunkId),
+    ),
+    check(
+      'all review matrix rows have evidence chunks',
+      result.contractReview.reviewMatrix.every((row) => row.evidenceChunkId),
     ),
     check(
       'public analysis note has no hidden reasoning leak',
@@ -92,6 +109,7 @@ for (const sample of samples) {
     expected: {
       missing_clause_count: sample.expectedMissingClauses,
       key_metric_count: sample.expectedKeyMetrics,
+      review_matrix_count: sample.expectedMatrixRows,
     },
     actual: {
       provider: result.log.provider,
@@ -101,7 +119,10 @@ for (const sample of samples) {
       missing_clause_count: missingClauseCount,
       amendment_draft_count: amendmentDraftCount,
       key_metric_count: keyMetricCount,
+      review_matrix_count: matrixRowCount,
       citation_count: result.citations.length,
+      policy_pack_id: result.log.policy_pack_id,
+      policy_pack_version: result.log.policy_pack_version,
       generation_ttft_ms: result.log.generation_ttft_ms,
       generation_ms: result.log.generation_ms,
       model_load_ms: result.log.model_load_ms,
@@ -121,6 +142,7 @@ const report = {
   evidence: {
     latest_demo_run: 'evidence/logs/latest-demo-run.json',
     validation_report: 'evidence/logs/validation-report.json',
+    review_report: 'evidence/logs/review-report.json',
     api_disclosure: 'evidence/api-disclosure.json',
   },
 }

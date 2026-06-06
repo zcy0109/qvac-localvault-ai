@@ -1,42 +1,46 @@
 # LocalVault AI
 
-LocalVault AI 是一个面向 QVAC Hackathon 通用设备赛道的本地优先隐私文档智能工作台。项目目标是在消费级笔记本或台式机上，用 QVAC SDK 完成私密文档审查、关键条款提取、风险登记、行动计划生成和可审计证据导出，不依赖远程 AI API。
+LocalVault AI is a local-first confidential contract intelligence workspace for the QVAC Hackathon General Purpose Devices track. It runs on consumer Windows hardware and uses QVAC SDK for local inference, deterministic policy checks, citation-bound evidence, amendment drafting, and auditable report export without remote AI APIs.
 
-## 赛道定位
+## Track Fit
 
-- 赛道：General Purpose Devices
-- 设备：消费级 Windows 笔记本，16 GB RAM，RTX 3050 Ti Laptop GPU
-- 场景：企业合同、内部政策、研究资料、保密文档的本地审查
-- 核心价值：敏感文档不离开本机，评委可以用日志、哈希、引用分片和硬件信息复现审查过程
+- Track: General Purpose Devices
+- Device: consumer Windows laptop, 16 GB RAM, RTX 3050 Ti Laptop GPU
+- Scenario: confidential vendor contracts, internal security policies, and private business documents
+- Core value: sensitive documents stay local while reviewers still get structured AI-assisted analysis, source citations, hashes, hardware metadata, and reproducible validation
 
-## 核心功能
+## Core Features
 
-- 上传 PDF、TXT、Markdown 文档
-- 自动清空旧工作区，避免知识库上下文污染
-- 使用本地分片检索和 QVAC 推理完成保密审查
-- 确定性识别合同关键指标和缺失条款
-- 将关键指标、风险卡片和右侧引用证据分片绑定
-- 为缺失条款生成可直接插入合同的英文修订条款草案
-- 在 UI 中展示 Audit Evidence Pack，汇总 QVAC、零远程调用、哈希、硬件和复现路径
-- 记录 QVAC SDK 版本、模型、TTFT、TPS、模型加载时间、文档哈希、Prompt 哈希、硬件信息和远程调用情况
-- 导出 `evidence/logs/latest-demo-run.json` 和 `evidence/logs/validation-report.json`
+- Upload PDF, TXT, or Markdown documents.
+- Clear workspace isolation to prevent old-document contamination.
+- QVAC local inference for confidential document review.
+- JSON Policy Pack: `policy-packs/vendor-contract.json`.
+- Policy Matrix with requirement, status, evidence, and recommendation.
+- Deterministic detection of contract key metrics and missing clauses.
+- Evidence-bound findings that link metrics and risks to local document chunks.
+- Suggested amendment drafts for missing clauses.
+- Audit Evidence Pack showing QVAC provider, zero remote AI calls, hashes, hardware, and reproduction paths.
+- Exported reports:
+  - `evidence/logs/latest-demo-run.json`
+  - `evidence/logs/validation-report.json`
+  - `evidence/logs/review-report.json`
 
-## 当前 QVAC 集成
+## QVAC Integration
 
-- SDK：`@qvac/sdk@0.10.2`
-- 模型：`QWEN3_600M_INST_Q4`
-- 推理入口：`server/inference.ts`
-- 审查入口：`server/analysis.ts`
-- API 披露：`evidence/api-disclosure.json`
+- SDK: `@qvac/sdk@0.10.2`
+- Model: `QWEN3_600M_INST_Q4`
+- Inference entry: `server/inference.ts`
+- Review orchestration: `server/analysis.ts`
+- API disclosure: `evidence/api-disclosure.json`
 
-最终提交日志必须显示：
+Final logs should show:
 
 ```text
 provider: qvac
 remote_api_calls: []
 ```
 
-## 本地运行
+## Run Locally
 
 ```powershell
 npm install
@@ -45,15 +49,13 @@ $env:LOCALVAULT_REQUIRE_QVAC='true'
 npm run dev
 ```
 
-打开：
+Open:
 
 ```text
 http://127.0.0.1:5173
 ```
 
-## 自动验证
-
-评委或开发者可以运行：
+## Automated Validation
 
 ```powershell
 $env:LOCALVAULT_PROVIDER='qvac'
@@ -61,48 +63,57 @@ $env:LOCALVAULT_REQUIRE_QVAC='true'
 npm run validate:demo
 ```
 
-该命令会使用 `evidence/sample-documents/confidential-vendor-contract.md` 执行一次完整审查，并断言：
+The validation set checks three local contracts:
 
-- provider 为 `qvac`
-- 远程 AI 调用为 0
-- 识别 5 个缺失条款
-- 识别 9 个关键指标
-- 所有缺失条款和关键指标都有证据分片
-- 所有缺失条款都有修订条款草案
-- 展示用分析说明没有泄露模型思考或 JSON 指令
-- 文档哈希和 Prompt 哈希已记录
+| Document | Expected Missing Clauses | Expected Key Metrics | Expected Matrix Rows |
+| --- | ---: | ---: | ---: |
+| `vendor-contract-risky.md` | 5 | 9 | 14 |
+| `vendor-contract-partial.md` | 3 | 9 | 14 |
+| `vendor-contract-complete.md` | 0 | 9 | 14 |
 
-验证报告会写入：
+The report must show:
 
-```text
-evidence/logs/validation-report.json
-```
+- `ok: true`
+- `provider: qvac`
+- `remote_api_calls: []`
+- policy pack ID and version recorded
+- all missing clauses have evidence chunks and amendment drafts
+- all key metrics have evidence chunks
+- all Policy Matrix rows have evidence chunks
+- document SHA-256 and prompt SHA-256 recorded
 
-## 证据目录
+## Evidence Directory
 
 ```text
 evidence/
   README.md
   api-disclosure.json
+  demo-script.md
+  offline-proof-checklist.md
+  submission-notes.md
   logs/
     latest-demo-run.json
     validation-report.json
+    review-report.json
   sample-documents/
-    confidential-vendor-contract.md
+    vendor-contract-risky.md
+    vendor-contract-partial.md
+    vendor-contract-complete.md
   hardware-screenshots/
 ```
 
-## 演示重点
+## Demo Highlights
 
-1. 展示硬件：CPU、RAM、GPU、Windows 系统信息。
-2. 启动 QVAC 模式，确认 provider 为 `qvac`。
-3. 上传示例供应商保密合同。
-4. 运行本地审查，展示 5 个缺失条款、9 个关键指标和修订条款草案。
-5. 点击证据分片，证明每条结论都能追溯到本地文档片段。
-6. 展示 Audit Evidence Pack，说明 QVAC、零远程调用、哈希、硬件和复现路径。
-7. 打开证据日志，展示 `remote_api_calls: []`、SDK 版本、文档哈希、Prompt 哈希和性能指标。
-8. 运行 `npm run validate:demo`，生成可复现验证报告。
+1. Show hardware: CPU, RAM, GPU, Windows.
+2. Start in QVAC mode and show `provider: qvac`.
+3. Upload `vendor-contract-risky.md`.
+4. Show 5 missing clauses, 9 key metrics, and 14 Policy Matrix rows.
+5. Click evidence chunk buttons to prove source grounding.
+6. Show suggested amendment drafts.
+7. Export or open `review-report.json`.
+8. Show `remote_api_calls: []` and zero-cloud evidence.
+9. Run `npm run validate:demo`.
 
-## 许可证
+## License
 
 Apache-2.0

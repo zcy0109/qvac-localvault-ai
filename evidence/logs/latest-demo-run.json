@@ -1,6 +1,6 @@
 {
-  "id": "9888d874-ae8d-4d48-85bf-27149cfa649d",
-  "timestamp": "2026-06-06T09:01:17.924Z",
+  "id": "035e9cf0-cf9d-4141-ac18-677a62fe593c",
+  "timestamp": "2026-06-06T15:55:48.910Z",
   "provider": "qvac",
   "purpose": "confidential-document-review",
   "analysis_mode": "hybrid-deterministic-contract-review",
@@ -10,14 +10,14 @@
   "prompt_chars": 9260,
   "system_prompt_hash": "6f8c2440aaa916cda57e39e220c9b7a2aa0937cf65c7449c3a8139334b79a20b",
   "prompt_tokens_estimate": 2315,
-  "output_chars": 1871,
-  "output_tokens_estimate": 468,
-  "ttft_ms": 875,
-  "generation_ttft_ms": 874,
-  "generation_ms": 3561,
-  "tokens_per_second": 131.42,
-  "end_to_end_tokens_per_second": 131.42,
-  "total_inference_ms": 3561,
+  "output_chars": 1771,
+  "output_tokens_estimate": 443,
+  "ttft_ms": 867,
+  "generation_ttft_ms": 866,
+  "generation_ms": 3555,
+  "tokens_per_second": 124.61,
+  "end_to_end_tokens_per_second": 124.61,
+  "total_inference_ms": 3555,
   "document_count": 1,
   "input_file_names": [
     "vendor-contract-complete.md"
@@ -84,8 +84,11 @@
     "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
     "cpu_count": 12,
     "total_ram_gb": 15.71,
-    "free_ram_gb": 3.59,
+    "free_ram_gb": 2.1,
     "node": "v24.12.0"
   },
-  "remote_api_calls": []
+  "remote_api_calls": [],
+  "policy_pack_id": "vendor-contract-confidentiality-v1",
+  "policy_pack_version": "2026.06",
+  "review_matrix_count": 14
 }

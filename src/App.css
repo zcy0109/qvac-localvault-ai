@@ -186,6 +186,15 @@ button {
   padding: 11px 14px;
 }
 
+.secondary-button {
+  background: #eef6f3;
+  border: 1px solid #c8ded8;
+  color: #164e43;
+  font-size: 12px;
+  margin: 0;
+  padding: 8px 10px;
+}
+
 .ghost-button {
   background: #f8faf9;
   border: 1px solid #dfe3e1;
@@ -288,6 +297,105 @@ button:disabled {
 
 .section-heading h3 {
   margin-bottom: 0;
+}
+
+.split-heading {
+  justify-content: space-between;
+}
+
+.split-heading > div {
+  align-items: center;
+  display: flex;
+  gap: 7px;
+}
+
+.matrix-table {
+  border: 1px solid #e0e6e3;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.matrix-row {
+  align-items: stretch;
+  background: #ffffff;
+  border-bottom: 1px solid #e6e9e7;
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1.25fr 86px 1.45fr 1.45fr;
+  min-width: 0;
+  position: relative;
+}
+
+.matrix-row:last-child {
+  border-bottom: 0;
+}
+
+.matrix-row > * {
+  border-right: 1px solid #eef1ef;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 10px;
+}
+
+.matrix-row > *:last-child {
+  border-right: 0;
+}
+
+.matrix-header {
+  background: #f0f4f2;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.matrix-row strong,
+.matrix-row small {
+  display: block;
+}
+
+.matrix-row small {
+  color: #667080;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.matrix-row p {
+  font-size: 12px;
+}
+
+.matrix-status {
+  align-items: center;
+  display: flex;
+  font-size: 12px;
+  font-weight: 800;
+  justify-content: center;
+}
+
+.matrix-status.present {
+  color: #15803d;
+}
+
+.matrix-status.missing {
+  color: #b42318;
+}
+
+.matrix-status.review {
+  color: #b45309;
+}
+
+.matrix-missing {
+  box-shadow: inset 4px 0 0 #dc2626;
+}
+
+.matrix-present {
+  box-shadow: inset 4px 0 0 #16a34a;
+}
+
+.matrix-link {
+  bottom: 7px;
+  position: absolute;
+  right: 7px;
 }
 
 .metric-list {
@@ -585,7 +693,16 @@ ul {
   .review-hero,
   .metric-list,
   .finding-list,
-  .two-column {
+  .two-column,
+  .matrix-row {
     grid-template-columns: 1fr;
+  }
+
+  .matrix-row > * {
+    border-right: 0;
+  }
+
+  .matrix-header {
+    display: none;
   }
 }
