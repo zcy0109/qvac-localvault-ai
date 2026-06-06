@@ -217,7 +217,7 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className="app-shell" translate="no">
       <header className="topbar">
         <div>
           <p className="eyebrow">QVAC 黑客马拉松 · 通用设备赛道</p>
@@ -275,7 +275,7 @@ function App() {
                 <FileText size={16} />
                 <div>
                   <strong>{document.name}</strong>
-                  <span>{document.text.length.toLocaleString()} chars</span>
+                  <span>{document.text.length.toLocaleString()} 字符</span>
                 </div>
                 <button
                   type="button"
