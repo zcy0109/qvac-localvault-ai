@@ -127,6 +127,7 @@ function App() {
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [status, setStatus] = useState('准备进行本地审查。')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState('')
   const [activeCitationId, setActiveCitationId] = useState('')
 
@@ -135,7 +136,7 @@ function App() {
     [documents],
   )
 
-  async function handleFiles(files: FileList | null) {
+  async function handleFiles(files: FileList | File[] | null) {
     if (!files?.length) return
 
     setError('')
@@ -152,7 +153,14 @@ function App() {
       })
 
       if (!response.ok) {
-        setError(`无法提取 ${file.name}。请尝试 TXT、Markdown 或可解析的 PDF。`)
+        const payload = (await response.json().catch(() => ({}))) as {
+          error?: string
+        }
+        setError(
+          `无法提取 ${file.name}。${
+            payload.error ?? '请尝试 TXT、Markdown 或可解析的 PDF。'
+          }`,
+        )
         continue
       }
 
@@ -165,6 +173,15 @@ function App() {
     setStatus(
       `已载入 ${extracted.length} 个文件用于本地保密审查，旧工作区已清空。`,
     )
+  }
+
+  function handleDrop(event: {
+    preventDefault: () => void
+    dataTransfer: DataTransfer
+  }) {
+    event.preventDefault()
+    setIsDragging(false)
+    handleFiles(Array.from(event.dataTransfer.files))
   }
 
   function removeDocument(id: string) {
@@ -258,15 +275,30 @@ function App() {
             <Trash2 size={16} />
             清空工作区
           </button>
-          <label className="dropzone">
+          <label
+            className={isDragging ? 'dropzone dragging' : 'dropzone'}
+            onDragEnter={(event) => {
+              event.preventDefault()
+              setIsDragging(true)
+            }}
+            onDragOver={(event) => event.preventDefault()}
+            onDragLeave={(event) => {
+              event.preventDefault()
+              setIsDragging(false)
+            }}
+            onDrop={handleDrop}
+          >
             <input
               type="file"
               multiple
               accept=".txt,.md,.markdown,.pdf"
-              onChange={(event) => handleFiles(event.target.files)}
+              onChange={(event) => {
+                handleFiles(event.target.files)
+                event.currentTarget.value = ''
+              }}
             />
             <FileText size={28} />
-            <span>上传 PDF、TXT 或 Markdown 文件</span>
+            <span>点击或拖拽上传 PDF、TXT 或 Markdown 文件</span>
           </label>
 
           <div className="doc-list">

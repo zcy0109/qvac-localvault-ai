@@ -79,8 +79,19 @@ app.listen(port, () => {
 })
 
 async function extractPdfText(buffer: Buffer) {
-  const mod = await import('pdf-parse')
-  const parser = mod.default ?? mod
-  const result = await parser(buffer)
-  return result.text as string
+  const { PDFParse } = await import('pdf-parse')
+  const parser = new PDFParse({ data: buffer })
+
+  try {
+    const result = await parser.getText()
+    const text = result.text.trim()
+    if (!text) {
+      throw new Error(
+        'No selectable text was found in this PDF. If it is a scanned image PDF, convert it with OCR before review.',
+      )
+    }
+    return text
+  } finally {
+    await parser.destroy()
+  }
 }
