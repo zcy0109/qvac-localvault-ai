@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-06T17:32:38.159Z",
+  "generated_at": "2026-06-07T03:24:24.437Z",
   "project": "LocalVault AI",
   "analysis_mode": "hybrid-deterministic-contract-review",
   "policy_pack": {
@@ -17,7 +17,7 @@
       "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
       "cpu_count": 12,
       "total_ram_gb": 15.71,
-      "free_ram_gb": 2.35,
+      "free_ram_gb": 1.38,
       "node": "v24.12.0"
     }
   },
@@ -64,12 +64,12 @@
     ]
   },
   "performance": {
-    "model_load_ms": 7735,
-    "generation_ttft_ms": 7586,
-    "generation_ms": 13518,
-    "total_inference_ms": 21253,
-    "tokens_per_second": 37.43,
-    "end_to_end_tokens_per_second": 23.81
+    "model_load_ms": 10095,
+    "generation_ttft_ms": 1251,
+    "generation_ms": 7155,
+    "total_inference_ms": 17250,
+    "tokens_per_second": 68.34,
+    "end_to_end_tokens_per_second": 28.35
   },
   "summary": "Key extracted metrics: Incident response SLA = P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours; Incident response SLA = P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours; Incident response SLA = P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours; Incident response SLA = P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days; Audit log retention = minimum 180 days; Liquidated damages = 20% of total contract value; Confidentiality survival period = 3 years; Data retention limit = no copies after service completion; Local-only data processing = on-premises only; no cloud/off-site transfer. Detected 5 missing clauses: Missing data breach notification deadline; Missing Party A audit right; Missing force majeure liability allocation; Missing intellectual property ownership; Missing regular security reporting requirement.",
   "review_matrix": [

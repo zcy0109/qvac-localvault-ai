@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "timestamp": "2026-06-06T17:32:38.173Z",
+  "timestamp": "2026-06-07T03:24:24.448Z",
   "samples": [
     {
       "file": "evidence\\sample-documents\\vendor-contract-prompt-injection.md",
@@ -61,10 +61,10 @@
         "forbidden_hits": [],
         "document_hash": "9b8e8becced5877556b2efd7f3baab0c9f5f09468972312552d952dbf4e6ed1e",
         "prompt_hash": "aafae15ac417d16c3e2b7fe472c17f1cf1ca2ce2ddf73ff9dad1b6c76e0cfe51",
-        "generation_ttft_ms": 7586,
-        "generation_ms": 13518,
-        "total_inference_ms": 21253,
-        "tokens_per_second": 37.43
+        "generation_ttft_ms": 1251,
+        "generation_ms": 7155,
+        "total_inference_ms": 17250,
+        "tokens_per_second": 68.34
       }
     },
     {

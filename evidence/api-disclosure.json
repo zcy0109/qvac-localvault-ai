@@ -2,5 +2,5 @@
   "project": "LocalVault AI",
   "remote_api_calls": [],
   "cloud_ai_apis": [],
-  "notes": "最终评审配置应通过 QVAC SDK 在本地完成 AI 推理和文档审查。开发 fallback provider 仅用于 UI 和证据链测试，不能作为最终评审证据。"
+  "notes": "Final judging evidence is generated with QVAC SDK local inference. LocalVault AI does not use remote AI APIs for contract review, RAG, summarization, or missing-clause analysis. Any development-only fallback provider is excluded from final submission evidence."
 }

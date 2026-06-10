@@ -2,13 +2,13 @@
 
 Target length: under 5 minutes.
 
-## 0:00 - 0:25 Problem
+## 0:00 - 0:25 Problem And Product
 
-Confidential vendor contracts often contain customer PII, internal security requirements, pricing terms, and operational risk. Uploading them to a cloud AI API can create privacy and compliance exposure.
+Confidential vendor contracts often contain customer PII, internal security requirements, incident-response obligations, pricing terms, and operational risk. Uploading them to a cloud AI API can create privacy and compliance exposure.
 
-LocalVault AI reviews these documents locally on consumer hardware with QVAC SDK.
+LocalVault AI is a local-first confidential contract review workspace running on consumer Windows hardware. QVAC provides local inference, the Policy Pack provides deterministic compliance checks, and the Evidence Pack records auditable proof.
 
-## 0:25 - 0:55 Hardware And QVAC
+## 0:25 - 0:55 Hardware And QVAC Evidence
 
 Show the laptop hardware screenshots:
 
@@ -23,6 +23,7 @@ Then show the app evidence panel:
 - Model: `QWEN3_600M_INST_Q4`
 - Remote AI calls: `0`
 - Device: `12 threads / 15.71 GB RAM`
+- QVAC SDK: `0.10.2`
 
 ## 0:55 - 2:00 High-Risk Contract Review
 
@@ -45,7 +46,7 @@ Show:
 - Confidentiality survival period
 - Local-only data processing
 
-## 2:00 - 2:50 Evidence-Bound Findings
+## 2:00 - 2:45 Policy Matrix And Evidence-Bound Findings
 
 Scroll to the Policy Matrix and missing clauses sections.
 
@@ -61,19 +62,34 @@ Show the five high-risk missing clauses:
 
 For two findings, click the evidence chunk button and show the right-side citation panel. Explain that every conclusion is bound to a local document chunk, not a cloud response.
 
-## 2:50 - 3:35 Amendment Drafts
+## 2:45 - 3:20 Amendment Drafts And Report Export
 
 Show the Suggested amendment sections and the export button. Explain that the app does not only flag risk; it drafts concrete replacement clauses and exports a review report that a legal or security reviewer can audit.
 
-## 3:35 - 4:20 Robustness Check
+Open or mention:
 
-Briefly mention the automated validation set:
+- `evidence/logs/review-report.json`
+- `evidence/logs/latest-demo-run.json`
+
+## 3:20 - 4:15 Validation And Robustness
+
+Show the automated validation set:
 
 - `vendor-contract-risky.md`: expected missing clauses `5`
 - `vendor-contract-partial.md`: expected missing clauses `3`
 - `vendor-contract-complete.md`: expected missing clauses `0`
 
-Run or show `npm run validate:demo` and open `evidence/logs/validation-report.json`.
+Run or show:
+
+```powershell
+npm run validate:demo
+npm run validate:robustness
+```
+
+Open:
+
+- `evidence/logs/validation-report.json`
+- `evidence/logs/robustness-report.json`
 
 Point out:
 
@@ -86,10 +102,21 @@ Point out:
 - review matrix row count
 - QVAC SDK version
 - performance metrics
+- prompt injection was not followed
+- empty and unrelated files were rejected
 
-## 4:20 - 5:00 Zero-Cloud Close
+## 4:15 - 4:45 PDF And Drag-Drop Boundary
 
-Show `evidence/api-disclosure.json`.
+Briefly show that drag-and-drop upload works for Markdown/TXT and parseable text-layer PDFs. Mention the intentional limit: scanned image-only PDFs are rejected with a clear error because OCR is outside this submission scope.
+
+Do not show private user PDF files in the final video.
+
+## 4:45 - 5:00 Zero-Cloud Close
+
+Show:
+
+- `evidence/api-disclosure.json`
+- `evidence/offline-proof-checklist.md`
 
 If available, show Windows Resource Monitor or Task Manager network screenshot from the disconnected or zero-cloud run.
 
