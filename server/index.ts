@@ -29,9 +29,10 @@ app.post('/api/extract', upload.single('file'), async (request, response) => {
   }
 
   const file = request.file
+  const fileName = decodeUploadName(file.originalname)
   const isPdf =
     file.mimetype === 'application/pdf' ||
-    file.originalname.toLowerCase().endsWith('.pdf')
+    fileName.toLowerCase().endsWith('.pdf')
 
   try {
     const text = isPdf
@@ -40,7 +41,7 @@ app.post('/api/extract', upload.single('file'), async (request, response) => {
 
     response.json({
       id: crypto.randomUUID(),
-      name: file.originalname,
+      name: fileName,
       text,
     })
   } catch (error) {
@@ -90,8 +91,37 @@ async function extractPdfText(buffer: Buffer) {
         'No selectable text was found in this PDF. If it is a scanned image PDF, convert it with OCR before review.',
       )
     }
+    validatePdfTextQuality(text)
     return text
   } finally {
     await parser.destroy()
   }
+}
+
+function validatePdfTextQuality(text: string) {
+  if (text.length < 300) {
+    throw new Error(
+      `Only ${text.length} characters could be extracted from this PDF. It is likely scanned, image-based, or has an unsupported text layer. Use TXT, Markdown, or an OCR/text-layer PDF for review.`,
+    )
+  }
+
+  const mojibakeMatches = text.match(
+    /[�ÃÂÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ]/g,
+  )
+  const mojibakeRatio =
+    (mojibakeMatches?.length ?? 0) / Math.max(text.length, 1)
+  if (mojibakeRatio > 0.04) {
+    throw new Error(
+      'The PDF text layer appears to be garbled after extraction. Use TXT, Markdown, or regenerate the PDF with a selectable UTF-8 text layer before review.',
+    )
+  }
+}
+
+function decodeUploadName(name: string) {
+  const decoded = Buffer.from(name, 'latin1').toString('utf8')
+  return looksLikeMojibake(name) && !looksLikeMojibake(decoded) ? decoded : name
+}
+
+function looksLikeMojibake(value: string) {
+  return /[�ÃÂãäåæçèéêëìíîïðñòóôõöøùúûü]/.test(value)
 }

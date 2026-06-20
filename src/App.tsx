@@ -298,7 +298,8 @@ function App() {
               }}
             />
             <FileText size={28} />
-            <span>点击或拖拽上传 PDF、TXT 或 Markdown 文件</span>
+            <span>点击或拖拽上传文本型 PDF、TXT 或 Markdown 文件</span>
+            <small>扫描版或乱码文本层 PDF 会被拒绝，避免误审。</small>
           </label>
 
           <div className="doc-list">
