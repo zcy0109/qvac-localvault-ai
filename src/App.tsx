@@ -125,7 +125,7 @@ function App() {
     'Review the uploaded confidential vendor contract. Summarize core obligations, identify legal and security risks, extract missing clauses or missing information, and create an action list.',
   )
   const [result, setResult] = useState<AnalysisResult | null>(null)
-  const [status, setStatus] = useState('准备进行本地审查。')
+  const [status, setStatus] = useState('Ready for local review.')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState('')
@@ -140,7 +140,7 @@ function App() {
     if (!files?.length) return
 
     setError('')
-    setStatus('正在提取本地文件...')
+    setStatus('Extracting local files...')
 
     const extracted: DocumentInput[] = []
     for (const file of Array.from(files)) {
@@ -157,8 +157,8 @@ function App() {
           error?: string
         }
         setError(
-          `无法提取 ${file.name}。${
-            payload.error ?? '请尝试 TXT、Markdown 或可解析的 PDF。'
+          `Could not extract ${file.name}. ${
+            payload.error ?? 'Use TXT, Markdown, or a parseable text-layer PDF.'
           }`,
         )
         continue
@@ -171,7 +171,7 @@ function App() {
     setResult(null)
     setActiveCitationId('')
     setStatus(
-      `已载入 ${extracted.length} 个文件用于本地保密审查，旧工作区已清空。`,
+      `${extracted.length} file(s) staged for local confidential review. Previous workspace cleared.`,
     )
   }
 
@@ -188,7 +188,7 @@ function App() {
     setDocuments((current) => current.filter((document) => document.id !== id))
     setResult(null)
     setActiveCitationId('')
-    setStatus('文件已从本地审查工作区移除。')
+    setStatus('File removed from the local review workspace.')
   }
 
   function clearWorkspace() {
@@ -196,18 +196,18 @@ function App() {
     setResult(null)
     setActiveCitationId('')
     setError('')
-    setStatus('工作区已清空。请上传下一组待审查文件。')
+    setStatus('Workspace cleared. Upload the next review document.')
   }
 
   async function analyze() {
     if (!documents.length) {
-      setError('请先上传至少一个文件。')
+      setError('Upload at least one file first.')
       return
     }
 
     setIsAnalyzing(true)
     setError('')
-    setStatus('正在运行本地保密审查...')
+    setStatus('Running local confidential review...')
 
     try {
       const response = await fetch('/api/analyze', {
@@ -218,16 +218,16 @@ function App() {
 
       if (!response.ok) {
         const payload = await response.json()
-        throw new Error(payload.error ?? '分析失败。')
+        throw new Error(payload.error ?? 'Analysis failed.')
       }
 
       const payload = await response.json()
       setResult(payload)
       setActiveCitationId(payload.citations?.[0]?.chunkId ?? '')
-      setStatus('分析完成。证据日志已导出到本地。')
+      setStatus('Analysis complete. Evidence log exported locally.')
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '分析失败。')
-      setStatus('分析已停止。')
+      setError(caught instanceof Error ? caught.message : 'Analysis failed.')
+      setStatus('Analysis stopped.')
     } finally {
       setIsAnalyzing(false)
     }
@@ -237,25 +237,25 @@ function App() {
     <main className="app-shell" translate="no">
       <header className="topbar">
         <div>
-          <p className="eyebrow">QVAC 黑客马拉松 · 通用设备赛道</p>
+          <p className="eyebrow">QVAC Hackathon · General Purpose Devices</p>
           <h1>LocalVault AI</h1>
         </div>
         <div className="privacy-badge">
           <Lock size={18} />
-          本地优先的文档智能
+          Local-first document intelligence
         </div>
       </header>
 
       <section className="metrics">
-        <Metric label="文件" value={documents.length.toString()} />
-        <Metric label="本地文本" value={`${totalChars.toLocaleString()} 个字符`} />
+        <Metric label="Files" value={documents.length.toString()} />
+        <Metric label="Local text" value={`${totalChars.toLocaleString()} chars`} />
         <Metric
-          label="推理提供方"
+          label="Inference provider"
           value={result?.log.provider ?? 'auto'}
           warning={result?.log.provider === 'mock-development'}
         />
         <Metric
-          label="远程 AI 调用"
+          label="Remote AI calls"
           value={result?.log.remote_api_calls.length.toString() ?? '0'}
         />
       </section>
@@ -264,7 +264,7 @@ function App() {
         <aside className="panel upload-panel">
           <div className="panel-title">
             <Upload size={18} />
-            <h2>文件</h2>
+            <h2>Files</h2>
           </div>
           <button
             type="button"
@@ -273,7 +273,7 @@ function App() {
             disabled={!documents.length || isAnalyzing}
           >
             <Trash2 size={16} />
-            清空工作区
+            Clear workspace
           </button>
           <label
             className={isDragging ? 'dropzone dragging' : 'dropzone'}
@@ -298,8 +298,8 @@ function App() {
               }}
             />
             <FileText size={28} />
-            <span>点击或拖拽上传文本型 PDF、TXT 或 Markdown 文件</span>
-            <small>扫描版或乱码文本层 PDF 会被拒绝，避免误审。</small>
+            <span>Click or drag text-layer PDF, TXT, or Markdown files</span>
+            <small>Scanned or garbled PDFs are rejected to avoid false review.</small>
           </label>
 
           <div className="doc-list">
@@ -308,7 +308,7 @@ function App() {
                 <FileText size={16} />
                 <div>
                   <strong>{document.name}</strong>
-                  <span>{document.text.length.toLocaleString()} 字符</span>
+                  <span>{document.text.length.toLocaleString()} chars</span>
                 </div>
                 <button
                   type="button"
@@ -327,7 +327,7 @@ function App() {
         <section className="panel command-panel">
           <div className="panel-title">
             <Activity size={18} />
-            <h2>保密审查</h2>
+            <h2>Confidential Review</h2>
           </div>
           <textarea
             value={question}
@@ -336,7 +336,7 @@ function App() {
           />
           <button type="button" onClick={analyze} disabled={isAnalyzing}>
             <Play size={17} />
-            {isAnalyzing ? '正在分析...' : '运行本地审查'}
+            {isAnalyzing ? 'Analyzing...' : 'Run local review'}
           </button>
           <p className="status">{status}</p>
           {error && (
@@ -358,36 +358,36 @@ function App() {
         <aside className="panel evidence-panel">
           <div className="panel-title">
             <Gauge size={18} />
-            <h2>证据</h2>
+            <h2>Evidence</h2>
           </div>
 
           {result ? (
             <>
               <div className="log-grid">
                 <Metric
-                  label="首 token 延迟"
+                  label="First-token latency"
                   value={`${result.log.generation_ttft_ms ?? result.log.ttft_ms} ms`}
                 />
                 <Metric
-                  label="生成速度 TPS"
+                  label="Generation TPS"
                   value={result.log.tokens_per_second.toString()}
                 />
                 <Metric
-                  label="生成耗时"
+                  label="Generation time"
                   value={`${result.log.generation_ms ?? result.log.total_inference_ms} ms`}
                 />
-                <Metric label="模型加载" value={`${result.log.model_load_ms} ms`} />
+                <Metric label="Model load" value={`${result.log.model_load_ms} ms`} />
               </div>
               <div className="audit">
                 <CheckCircle2 size={17} />
-                <span>最新日志已导出到 evidence/logs/latest-demo-run.json</span>
+                <span>Latest log exported to evidence/logs/latest-demo-run.json</span>
               </div>
               <AuditEvidencePack result={result} />
               <div className="evidence-meta">
                 <EvidenceItem label="QVAC SDK" value={result.log.qvac_sdk_version} />
-                <EvidenceItem label="分析模式" value={result.log.analysis_mode} />
+                <EvidenceItem label="Analysis mode" value={result.log.analysis_mode} />
                 <EvidenceItem
-                  label="文档 SHA-256"
+                  label="Document SHA-256"
                   value={shortHash(result.log.document_hashes?.[0]?.sha256)}
                 />
                 <EvidenceItem
@@ -395,31 +395,31 @@ function App() {
                   value={shortHash(result.log.system_prompt_hash)}
                 />
                 <EvidenceItem
-                  label="分片 / 检索"
+                  label="Chunks / retrieved"
                   value={`${result.log.chunk_count ?? 0} / ${
                     result.log.retrieved_chunks?.length ??
                     result.log.selected_chunks.length
                   }`}
                 />
                 <EvidenceItem
-                  label="缺失条款 / 关键指标"
+                  label="Missing clauses / key metrics"
                   value={`${result.log.missing_clause_count ?? 0} / ${
                     result.log.key_metric_count ?? 0
                   }`}
                 />
                 <EvidenceItem
-                  label="端到端总耗时"
+                  label="End-to-end time"
                   value={`${result.log.total_inference_ms} ms`}
                 />
                 <EvidenceItem
-                  label="端到端 TPS"
+                  label="End-to-end TPS"
                   value={
                     result.log.end_to_end_tokens_per_second ??
                     result.log.tokens_per_second
                   }
                 />
               </div>
-              <h3>引用证据</h3>
+              <h3>Citation Evidence</h3>
               <div className="citation-list">
                 {result.citations.map((citation) => (
                   <article
@@ -439,7 +439,7 @@ function App() {
             </>
           ) : (
             <p className="empty">
-              运行审查后将生成引用、设备元数据和可审计性能日志。
+              Run a review to generate citations, device metadata, and auditable performance logs.
             </p>
           )}
         </aside>
@@ -472,7 +472,8 @@ function EvidenceItem({
   label: string
   value?: string | number
 }) {
-  const displayValue = value === undefined || value === null || value === '' ? '未记录' : value
+  const displayValue =
+    value === undefined || value === null || value === '' ? 'Not recorded' : value
 
   return (
     <div className="evidence-item">
@@ -561,11 +562,11 @@ function ContractReviewPanel({
     <div className="output review-output">
       <section className="review-hero">
         <div>
-          <h3>合同概述</h3>
+          <h3>Contract Overview</h3>
           <p>{cleanDisplayText(result.summary, 'summary')}</p>
         </div>
         <div className="review-score">
-          <span>缺失条款</span>
+          <span>Missing clauses</span>
           <strong>{missingClauses.length}</strong>
         </div>
       </section>
@@ -574,7 +575,7 @@ function ContractReviewPanel({
         <div className="section-heading split-heading">
           <div>
             <ListChecks size={17} />
-            <h3>政策矩阵</h3>
+            <h3>Policy Matrix</h3>
           </div>
           <button
             type="button"
@@ -582,15 +583,15 @@ function ContractReviewPanel({
             onClick={() => downloadReviewReport(result)}
           >
             <Download size={15} />
-            导出报告
+            Export report
           </button>
         </div>
         <div className="matrix-table" role="table" aria-label="Policy review matrix">
           <div className="matrix-row matrix-header" role="row">
-            <span>要求项</span>
-            <span>状态</span>
-            <span>证据</span>
-            <span>建议</span>
+            <span>Requirement</span>
+            <span>Status</span>
+            <span>Evidence</span>
+            <span>Recommendation</span>
           </div>
           {reviewMatrix.map((row) => (
             <div
@@ -614,7 +615,7 @@ function ContractReviewPanel({
                     className="evidence-link matrix-link"
                     onClick={() => onSelectCitation(row.evidenceChunkId ?? '')}
                   >
-                    证据分片 {shortHash(row.evidenceChunkId)}
+                    Evidence chunk {shortHash(row.evidenceChunkId)}
                   </button>
                 )}
               </div>
@@ -626,7 +627,7 @@ function ContractReviewPanel({
       <section>
         <div className="section-heading">
           <ListChecks size={17} />
-          <h3>关键指标</h3>
+          <h3>Key Metrics</h3>
         </div>
         <div className="metric-list">
           {keyMetrics.map((metric) => (
@@ -647,19 +648,19 @@ function ContractReviewPanel({
                   className="evidence-link"
                   onClick={() => onSelectCitation(metric.evidenceChunkId ?? '')}
                 >
-                  证据分片 {shortHash(metric.evidenceChunkId)}
+                  Evidence chunk {shortHash(metric.evidenceChunkId)}
                 </button>
               )}
             </article>
           ))}
-          {!keyMetrics.length && <p>未提取到关键数值条款。</p>}
+          {!keyMetrics.length && <p>No key numeric terms were extracted.</p>}
         </div>
       </section>
 
       <section>
         <div className="section-heading">
           <ShieldAlert size={17} />
-          <h3>缺失条款</h3>
+          <h3>Missing Clauses</h3>
         </div>
         <div className="finding-list">
           {missingClauses.map((finding) => (
@@ -672,7 +673,7 @@ function ContractReviewPanel({
               }
             >
               <div>
-                <span className="severity">高风险</span>
+                <span className="severity">High risk</span>
                 <h4>{finding.title}</h4>
               </div>
               <p>{finding.risk}</p>
@@ -689,7 +690,7 @@ function ContractReviewPanel({
                   className="evidence-link"
                   onClick={() => onSelectCitation(finding.evidenceChunkId ?? '')}
                 >
-                  证据分片 {shortHash(finding.evidenceChunkId)}
+                  Evidence chunk {shortHash(finding.evidenceChunkId)}
                 </button>
               )}
             </article>
@@ -697,10 +698,10 @@ function ContractReviewPanel({
           {!missingClauses.length && (
             <article className="finding-card clean">
               <div>
-                <span className="severity">通过</span>
-                <h4>未检测到预设缺失条款</h4>
+                <span className="severity">Passed</span>
+                <h4>No predefined missing clauses detected</h4>
               </div>
-              <p>本地确定性审查未发现需要补充的预设缺失条款。</p>
+              <p>The local deterministic review did not detect any predefined missing clauses.</p>
             </article>
           )}
         </div>
@@ -710,7 +711,7 @@ function ContractReviewPanel({
         <div>
           <div className="section-heading">
             <ShieldCheck size={17} />
-            <h3>风险登记</h3>
+            <h3>Risk Register</h3>
           </div>
           <ul className="compact-list">
             {risks.map((item) => (
@@ -721,7 +722,7 @@ function ContractReviewPanel({
         <div>
           <div className="section-heading">
             <CheckCircle2 size={17} />
-            <h3>行动计划</h3>
+            <h3>Action Plan</h3>
           </div>
           <ul className="compact-list">
             {actionItems.map((item) => (
@@ -732,7 +733,7 @@ function ContractReviewPanel({
       </section>
 
       <section>
-        <h3>本地分析说明</h3>
+        <h3>Local Analysis Note</h3>
         <p>{cleanDisplayText(result.answer, 'answer')}</p>
       </section>
     </div>
@@ -782,9 +783,9 @@ function shortHash(value?: string) {
 }
 
 function formatMatrixStatus(status: 'present' | 'missing' | 'review') {
-  if (status === 'present') return '通过'
-  if (status === 'missing') return '缺失'
-  return '复核'
+  if (status === 'present') return 'Pass'
+  if (status === 'missing') return 'Missing'
+  return 'Review'
 }
 
 function downloadReviewReport(result: AnalysisResult) {
