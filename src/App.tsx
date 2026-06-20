@@ -573,7 +573,7 @@ function ContractReviewPanel({
         <div className="section-heading split-heading">
           <div>
             <ListChecks size={17} />
-            <h3>Policy Matrix</h3>
+            <h3>政策矩阵</h3>
           </div>
           <button
             type="button"
@@ -605,16 +605,18 @@ function ContractReviewPanel({
                 {formatMatrixStatus(row.status)}
               </span>
               <p>{row.evidence}</p>
-              <p>{row.recommendation}</p>
-              {row.evidenceChunkId && (
-                <button
-                  type="button"
-                  className="evidence-link matrix-link"
-                  onClick={() => onSelectCitation(row.evidenceChunkId ?? '')}
-                >
-                  证据分片 {shortHash(row.evidenceChunkId)}
-                </button>
-              )}
+              <div className="matrix-recommendation">
+                <p>{row.recommendation}</p>
+                {row.evidenceChunkId && (
+                  <button
+                    type="button"
+                    className="evidence-link matrix-link"
+                    onClick={() => onSelectCitation(row.evidenceChunkId ?? '')}
+                  >
+                    证据分片 {shortHash(row.evidenceChunkId)}
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
