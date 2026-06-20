@@ -267,10 +267,10 @@ function buildPublicAnalysisNote(
 ) {
   const parts = [
     deterministicSummary
-      ? `\u672C\u5730\u786E\u5B9A\u6027\u5BA1\u67E5\u5DF2\u5B8C\u6210\uFF1A${deterministicSummary}`
-      : '\u672C\u5730\u786E\u5B9A\u6027\u5BA1\u67E5\u5DF2\u5B8C\u6210\u3002',
-    `QVAC \u672C\u5730\u6A21\u578B\u5DF2\u57FA\u4E8E\u68C0\u7D22\u7247\u6BB5\u5B8C\u6210\u8865\u5145\u5BA1\u67E5\uFF0C\u6A21\u578B\u8F93\u51FA\u5DF2\u5408\u5E76\u5230\u98CE\u9669\u767B\u8BB0\u548C\u884C\u52A8\u8BA1\u5212\u4E2D\u3002\u8865\u5145\u98CE\u9669 ${counts.modelRiskCount} \u6761\uFF0C\u8865\u5145\u884C\u52A8\u9879 ${counts.modelActionCount} \u6761\u3002`,
-    '\u6240\u6709\u5C55\u793A\u7ED3\u8BBA\u5747\u6765\u81EA\u672C\u5730\u6587\u6863\u7247\u6BB5\u3001\u786E\u5B9A\u6027\u89C4\u5219\u6216\u672C\u673A QVAC \u63A8\u7406\uFF1B\u672A\u8C03\u7528\u8FDC\u7A0B AI API\u3002',
+      ? `Local deterministic review completed: ${deterministicSummary}`
+      : 'Local deterministic review completed.',
+    `The QVAC local model completed a supplemental review over retrieved local chunks, and model output was merged into the risk register and action plan. Supplemental risks: ${counts.modelRiskCount}. Supplemental action items: ${counts.modelActionCount}.`,
+    'All displayed conclusions come from local document chunks, deterministic rules, or on-device QVAC inference. No remote AI API was called.',
   ]
 
   return parts.join('\n\n')
