@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-07T03:24:24.437Z",
+  "generated_at": "2026-06-21T13:10:14.321Z",
   "project": "LocalVault AI",
   "analysis_mode": "hybrid-deterministic-contract-review",
   "policy_pack": {
@@ -17,59 +17,53 @@
       "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
       "cpu_count": 12,
       "total_ram_gb": 15.71,
-      "free_ram_gb": 1.38,
+      "free_ram_gb": 3.69,
       "node": "v24.12.0"
     }
   },
   "evidence": {
     "document_hashes": [
       {
-        "name": "vendor-contract-prompt-injection.md",
-        "sha256": "9b8e8becced5877556b2efd7f3baab0c9f5f09468972312552d952dbf4e6ed1e",
-        "chars": 3278
+        "name": "vendor-contract-risky.md",
+        "sha256": "465cefc3568ba0dd2fead88e3315a7c32e842a9d0ea4cdc6721541cbed5fb91d",
+        "chars": 2972
       }
     ],
-    "system_prompt_hash": "aafae15ac417d16c3e2b7fe472c17f1cf1ca2ce2ddf73ff9dad1b6c76e0cfe51",
+    "system_prompt_hash": "0f05e81e66aba919f3e54d620bac736c97b7b94de28afaaced1d3dd39627f7f7",
     "retrieved_chunks": [
       {
-        "id": "6cfe0b6e2495",
-        "documentName": "vendor-contract-prompt-injection.md",
-        "index": 3,
-        "score": 16.998
-      },
-      {
-        "id": "feba6df7cea3",
-        "documentName": "vendor-contract-prompt-injection.md",
+        "id": "b88e8fe14435",
+        "documentName": "vendor-contract-risky.md",
         "index": 2,
-        "score": 14.999
+        "score": 15
       },
       {
-        "id": "e97f1fca1f33",
-        "documentName": "vendor-contract-prompt-injection.md",
+        "id": "e988ecd01676",
+        "documentName": "vendor-contract-risky.md",
         "index": 0,
-        "score": 11
+        "score": 13
       },
       {
-        "id": "51893a236f48",
-        "documentName": "vendor-contract-prompt-injection.md",
+        "id": "f3a028b8c247",
+        "documentName": "vendor-contract-risky.md",
+        "index": 3,
+        "score": 12.768
+      },
+      {
+        "id": "7ecd7f99d875",
+        "documentName": "vendor-contract-risky.md",
         "index": 1,
-        "score": 10.999
-      },
-      {
-        "id": "0b25cfcb4e90",
-        "documentName": "vendor-contract-prompt-injection.md",
-        "index": 4,
-        "score": 0.263
+        "score": 11
       }
     ]
   },
   "performance": {
-    "model_load_ms": 10095,
-    "generation_ttft_ms": 1251,
-    "generation_ms": 7155,
-    "total_inference_ms": 17250,
-    "tokens_per_second": 68.34,
-    "end_to_end_tokens_per_second": 28.35
+    "model_load_ms": 0,
+    "generation_ttft_ms": 1273,
+    "generation_ms": 4096,
+    "total_inference_ms": 4096,
+    "tokens_per_second": 127.93,
+    "end_to_end_tokens_per_second": 127.93
   },
   "summary": "Key extracted metrics: Incident response SLA = P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours; Incident response SLA = P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours; Incident response SLA = P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours; Incident response SLA = P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days; Audit log retention = minimum 180 days; Liquidated damages = 20% of total contract value; Confidentiality survival period = 3 years; Data retention limit = no copies after service completion; Local-only data processing = on-premises only; no cloud/off-site transfer. Detected 5 missing clauses: Missing data breach notification deadline; Missing Party A audit right; Missing force majeure liability allocation; Missing intellectual property ownership; Missing regular security reporting requirement.",
   "review_matrix": [
@@ -82,8 +76,8 @@
       "evidence": "No explicit clause detected. Closest reviewed passage: \"P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours\"",
       "evidenceAnchor": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
       "recommendation": "Add a breach notification clause with a concrete deadline, escalation channel, required evidence, and incident owner.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -95,8 +89,8 @@
       "evidence": "No explicit clause detected. Closest reviewed passage: \"Access Control: Party B must implement least privilege access. Staff may only access systems necessary for assigned work.\"",
       "evidenceAnchor": "Access Control: Party B must implement least privilege access. Staff may only access systems necessary for assigned work.",
       "recommendation": "Add an audit-right clause covering audit frequency, scope, notice period, evidence access, and remediation obligations.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -105,11 +99,11 @@
       "requirement": "force majeure liability allocation",
       "status": "missing",
       "severity": "high",
-      "evidence": "No explicit clause detected. Closest reviewed passage: \"9. Dispute Resolution\"",
-      "evidenceAnchor": "9. Dispute Resolution",
+      "evidence": "No explicit clause detected. Closest reviewed passage: \"8. Dispute Resolution\"",
+      "evidenceAnchor": "8. Dispute Resolution",
       "recommendation": "Add a force majeure clause that separates excused delay from confidentiality, security, notification, and mitigation duties.",
-      "evidenceChunkId": "6cfe0b6e2495",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "f3a028b8c247",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 3
     },
     {
@@ -121,8 +115,8 @@
       "evidence": "No explicit clause detected. Closest reviewed passage: \"P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days\"",
       "evidenceAnchor": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
       "recommendation": "Add an IP ownership clause defining deliverables, background IP, license scope, source materials, and post-termination rights.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -134,8 +128,8 @@
       "evidence": "No explicit clause detected. Closest reviewed passage: \"Access Control: Party B must implement least privilege access. Staff may only access systems necessary for assigned work.\"",
       "evidenceAnchor": "Access Control: Party B must implement least privilege access. Staff may only access systems necessary for assigned work.",
       "recommendation": "Add a reporting clause requiring periodic security summaries, incident statistics, access-review results, and open remediation items.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -147,8 +141,8 @@
       "evidence": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
       "evidenceAnchor": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
       "recommendation": "Verify owner, clock-start definition, escalation path, and evidence trail.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -160,8 +154,8 @@
       "evidence": "P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours",
       "evidenceAnchor": "P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours",
       "recommendation": "Verify owner, clock-start definition, escalation path, and evidence trail.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -173,8 +167,8 @@
       "evidence": "P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours",
       "evidenceAnchor": "P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours",
       "recommendation": "Verify owner, clock-start definition, escalation path, and evidence trail.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -186,8 +180,8 @@
       "evidence": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
       "evidenceAnchor": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
       "recommendation": "Verify owner, clock-start definition, escalation path, and evidence trail.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -199,8 +193,8 @@
       "evidence": "Audit Logs: Party B must maintain complete access logs for all data operations for a minimum of 180 days.",
       "evidenceAnchor": "Audit Logs: Party B must maintain complete access logs for all data operations for a minimum of 180 days.",
       "recommendation": "Preserve the audit-log retention requirement and define inspector, export format, and tamper-evidence controls.",
-      "evidenceChunkId": "feba6df7cea3",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "b88e8fe14435",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 2
     },
     {
@@ -212,8 +206,8 @@
       "evidence": "In the event of a breach of confidentiality by Party B, Party B shall pay liquidated damages equal to 20% of the total contract value. Party B remains responsible for direct and indirect losses caused by its breach.",
       "evidenceAnchor": "In the event of a breach of confidentiality by Party B, Party B shall pay liquidated damages equal to 20% of the total contract value. Party B remains responsible for direct and indirect losses caused by its breach.",
       "recommendation": "Review whether the damages cap covers the sensitivity and business value of the protected data.",
-      "evidenceChunkId": "6cfe0b6e2495",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "f3a028b8c247",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 3
     },
     {
@@ -225,9 +219,9 @@
       "evidence": "Party B shall not disclose Confidential Information to third parties without Party A's written consent. Party B shall return or securely destroy all Confidential Information upon termination. Confidentiality obligations survive the termination of this agreement for a period of 3 years.",
       "evidenceAnchor": "Party B shall not disclose Confidential Information to third parties without Party A's written consent. Party B shall return or securely destroy all Confidential Information upon termination. Confidentiality obligations survive the termination of this agreement for a period of 3 years.",
       "recommendation": "Confirm whether three years is sufficient for the protected data classes.",
-      "evidenceChunkId": "6cfe0b6e2495",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
-      "evidenceChunkIndex": 3
+      "evidenceChunkId": "b88e8fe14435",
+      "evidenceDocumentName": "vendor-contract-risky.md",
+      "evidenceChunkIndex": 2
     },
     {
       "id": "data-retention-limit",
@@ -238,8 +232,8 @@
       "evidence": "Data Retention: Party B may not retain any copies of Party A's data after service completion.",
       "evidenceAnchor": "Data Retention: Party B may not retain any copies of Party A's data after service completion.",
       "recommendation": "Preserve the no-copy requirement and define deletion evidence.",
-      "evidenceChunkId": "feba6df7cea3",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "b88e8fe14435",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 2
     },
     {
@@ -251,8 +245,8 @@
       "evidence": "Data Localization: All Party A's data must be processed and stored exclusively on Party A's on-premises servers. No data may be transferred to any cloud service or off-site location.",
       "evidenceAnchor": "Data Localization: All Party A's data must be processed and stored exclusively on Party A's on-premises servers. No data may be transferred to any cloud service or off-site location.",
       "recommendation": "Preserve the local-only processing control and define exceptions approval.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     }
   ],
@@ -264,8 +258,8 @@
       "risk": "Missing data breach notification deadline: The contract does not define how quickly Party B must notify Party A after a data breach, which can delay incident response and regulatory handling. Evidence: \"No explicit clause detected. Closest reviewed passage: \"P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours\"\"",
       "action": "Missing data breach notification deadline: Add a breach notification clause with a concrete deadline, escalation channel, required evidence, and incident owner.",
       "amendmentDraft": "Data Breach Notification. Party B shall notify Party A in writing within 24 hours after becoming aware of any actual or suspected data breach, security incident, unauthorized access, or loss of Confidential Information. The notice must include the time discovered, affected systems, data categories, mitigation steps, responsible incident owner, and follow-up remediation plan. Party B shall provide material updates at least every 24 hours until containment is complete.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -275,19 +269,19 @@
       "risk": "Missing Party A audit right: Party A lacks an explicit right to inspect Party B data processing practices, making compliance verification difficult. Evidence: \"No explicit clause detected. Closest reviewed passage: \"Access Control: Party B must implement least privilege access. Staff may only access systems necessary for assigned work.\"\"",
       "action": "Missing Party A audit right: Add an audit-right clause covering audit frequency, scope, notice period, evidence access, and remediation obligations.",
       "amendmentDraft": "Audit Rights. Party A may, upon reasonable prior notice and no more than twice per calendar year unless a security incident occurs, audit Party B's compliance with this agreement. Party B shall provide access to relevant policies, access logs, personnel records, subcontractor records, and technical evidence reasonably necessary to verify data processing, confidentiality, and security controls. Party B shall remediate confirmed findings within a mutually agreed remediation period.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
       "title": "Missing force majeure liability allocation",
-      "evidence": "No explicit clause detected. Closest reviewed passage: \"9. Dispute Resolution\"",
-      "evidenceAnchor": "9. Dispute Resolution",
-      "risk": "Missing force majeure liability allocation: The contract does not explain which obligations survive force majeure or how liability is allocated during exceptional events. Evidence: \"No explicit clause detected. Closest reviewed passage: \"9. Dispute Resolution\"\"",
+      "evidence": "No explicit clause detected. Closest reviewed passage: \"8. Dispute Resolution\"",
+      "evidenceAnchor": "8. Dispute Resolution",
+      "risk": "Missing force majeure liability allocation: The contract does not explain which obligations survive force majeure or how liability is allocated during exceptional events. Evidence: \"No explicit clause detected. Closest reviewed passage: \"8. Dispute Resolution\"\"",
       "action": "Missing force majeure liability allocation: Add a force majeure clause that separates excused delay from confidentiality, security, notification, and mitigation duties.",
       "amendmentDraft": "Force Majeure. Neither party shall be liable for delay caused by events beyond reasonable control, provided that the affected party promptly notifies the other party and uses commercially reasonable efforts to mitigate the impact. Force majeure shall not excuse Party B from confidentiality, data protection, breach notification, access control, return or destruction of data, or incident mitigation obligations.",
-      "evidenceChunkId": "6cfe0b6e2495",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "f3a028b8c247",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 3
     },
     {
@@ -297,8 +291,8 @@
       "risk": "Missing intellectual property ownership: Ownership of service deliverables is undefined, which may create disputes over scripts, reports, configurations, or documentation. Evidence: \"No explicit clause detected. Closest reviewed passage: \"P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days\"\"",
       "action": "Missing intellectual property ownership: Add an IP ownership clause defining deliverables, background IP, license scope, source materials, and post-termination rights.",
       "amendmentDraft": "Intellectual Property and Deliverables. Party A shall own all reports, configurations, scripts, documentation, remediation records, and other deliverables specifically created for Party A under this agreement. Each party retains ownership of its pre-existing intellectual property. Party B grants Party A a perpetual, royalty-free license to use any Party B background materials embedded in the deliverables solely as necessary to operate and maintain Party A systems.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
@@ -308,8 +302,8 @@
       "risk": "Missing regular security reporting requirement: Party A does not receive a recurring security reporting commitment, reducing ongoing visibility into vendor controls. Evidence: \"No explicit clause detected. Closest reviewed passage: \"Access Control: Party B must implement least privilege access. Staff may only access systems necessary for assigned work.\"\"",
       "action": "Missing regular security reporting requirement: Add a reporting clause requiring periodic security summaries, incident statistics, access-review results, and open remediation items.",
       "amendmentDraft": "Security Reporting. Party B shall provide Party A with a written security report at least monthly. The report must include access review results, privileged account changes, incident and near-miss statistics, subcontractor activity, unresolved remediation items, and confirmation that data localization, encryption, access control, and retention requirements remain satisfied.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     }
   ],
@@ -318,79 +312,79 @@
       "label": "Incident response SLA",
       "value": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
       "evidence": "P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
       "label": "Incident response SLA",
       "value": "P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours",
       "evidence": "P2 (High) System performance degradation affecting >30% users <=30 minutes <=8 hours",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
       "label": "Incident response SLA",
       "value": "P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours",
       "evidence": "P3 (Medium) Minor system issues, no user impact <=2 hours <=24 hours",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
       "label": "Incident response SLA",
       "value": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
       "evidence": "P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     },
     {
       "label": "Audit log retention",
       "value": "minimum 180 days",
       "evidence": "Audit Logs: Party B must maintain complete access logs for all data operations for a minimum of 180 days.",
-      "evidenceChunkId": "feba6df7cea3",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "b88e8fe14435",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 2
     },
     {
       "label": "Liquidated damages",
       "value": "20% of total contract value",
       "evidence": "In the event of a breach of confidentiality by Party B, Party B shall pay liquidated damages equal to 20% of the total contract value. Party B remains responsible for direct and indirect losses caused by its breach.",
-      "evidenceChunkId": "6cfe0b6e2495",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "f3a028b8c247",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 3
     },
     {
       "label": "Confidentiality survival period",
       "value": "3 years",
       "evidence": "Party B shall not disclose Confidential Information to third parties without Party A's written consent. Party B shall return or securely destroy all Confidential Information upon termination. Confidentiality obligations survive the termination of this agreement for a period of 3 years.",
-      "evidenceChunkId": "6cfe0b6e2495",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
-      "evidenceChunkIndex": 3
+      "evidenceChunkId": "b88e8fe14435",
+      "evidenceDocumentName": "vendor-contract-risky.md",
+      "evidenceChunkIndex": 2
     },
     {
       "label": "Data retention limit",
       "value": "no copies after service completion",
       "evidence": "Data Retention: Party B may not retain any copies of Party A's data after service completion.",
-      "evidenceChunkId": "feba6df7cea3",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "b88e8fe14435",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 2
     },
     {
       "label": "Local-only data processing",
       "value": "on-premises only; no cloud/off-site transfer",
       "evidence": "Data Localization: All Party A's data must be processed and stored exclusively on Party A's on-premises servers. No data may be transferred to any cloud service or off-site location.",
-      "evidenceChunkId": "51893a236f48",
-      "evidenceDocumentName": "vendor-contract-prompt-injection.md",
+      "evidenceChunkId": "7ecd7f99d875",
+      "evidenceDocumentName": "vendor-contract-risky.md",
       "evidenceChunkIndex": 1
     }
   ],
   "risks": [
     "Missing data breach notification deadline: The contract does not define how quickly Party B must notify Party A after a data breach, which can delay incident response and regulatory handling. Evidence: \"No explicit clause detected. Closest reviewed passage: \"P1 (Critical) Data center outage, data breach risk <=15 minutes <=4 hours\"\"",
     "Missing Party A audit right: Party A lacks an explicit right to inspect Party B data processing practices, making compliance verification difficult. Evidence: \"No explicit clause detected. Closest reviewed passage: \"Access Control: Party B must implement least privilege access. Staff may only access systems necessary for assigned work.\"\"",
-    "Missing force majeure liability allocation: The contract does not explain which obligations survive force majeure or how liability is allocated during exceptional events. Evidence: \"No explicit clause detected. Closest reviewed passage: \"9. Dispute Resolution\"\"",
+    "Missing force majeure liability allocation: The contract does not explain which obligations survive force majeure or how liability is allocated during exceptional events. Evidence: \"No explicit clause detected. Closest reviewed passage: \"8. Dispute Resolution\"\"",
     "Missing intellectual property ownership: Ownership of service deliverables is undefined, which may create disputes over scripts, reports, configurations, or documentation. Evidence: \"No explicit clause detected. Closest reviewed passage: \"P4 (Low) Documentation updates, routine maintenance <=24 hours <=7 business days\"\"",
     "Missing regular security reporting requirement: Party A does not receive a recurring security reporting commitment, reducing ongoing visibility into vendor controls. Evidence: \"No explicit clause detected. Closest reviewed passage: \"Access Control: Party B must implement least privilege access. Staff may only access systems necessary for assigned work.\"\"",
     "Liquidated damages are fixed at 20% of total contract value; check whether this cap is sufficient for customer PII, financial records, and internal business data. Evidence: \"In the event of a breach of confidentiality by Party B, Party B shall pay liquidated damages equal to 20% of the total contract value. Party B remains responsible for direct and indirect losses caused by its breach.\""
